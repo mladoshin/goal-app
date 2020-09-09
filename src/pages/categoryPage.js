@@ -49,11 +49,17 @@ function CategoryPage(props) {
     const [openQuickModal, setOpenQuickModal] = useState(false)
     
     var goalItems = []
+    var completedGoalItems = []
     props.goals.map((item, index) => {
         if (item.category === category && !item.isCompleted) {
             goalItems.push(item)
+        }else if(item.category === category && item.isCompleted){
+            completedGoalItems.push(item)
         }
     })
+
+    console.log(completedGoalItems)
+    
 
 
 

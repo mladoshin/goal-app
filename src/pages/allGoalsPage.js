@@ -15,6 +15,7 @@ import PoolRoundedIcon from '@material-ui/icons/PoolRounded';
 import SportsFootballRoundedIcon from '@material-ui/icons/SportsFootballRounded';
 import AddIcon from '@material-ui/icons/Add';
 import QuickModal from "../components/newGoalModal/quickModal";
+import ModalContext from '../components/newGoalModal/context/quickModalContext'
 
 const useStyles = makeStyles((theme) => ({
 
@@ -104,9 +105,22 @@ function AllGoalsPage(props) {
     }
 
     const PageContent = (props) => {
+        var completedGoalItems = []
+        var activeGoals = []
         if (filter == "allgoals") {
+            
+            props.goals.map((item, index) => {
+                if(item.isCompleted){
+                    completedGoalItems.push(item)
+                }else{
+                    activeGoals.push(item)
+                }
+            })
+
             return (
-                <GoalsGrid goals={props.goals} />
+                <ModalContext.Provider value={{setOpenQuickModal, openQuickModal}}>
+                    <GoalsGrid goals={activeGoals} completedGoals={completedGoalItems}/>
+                </ModalContext.Provider>
             )
 
         } else if (filter == "allcategories") {
@@ -144,7 +158,7 @@ function AllGoalsPage(props) {
                 </Fab>
             </Tooltip>
             <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} />
-            <QuickModal/>
+            {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal}/> : null}
         </React.Fragment>
 
     );
