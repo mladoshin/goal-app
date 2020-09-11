@@ -1,18 +1,21 @@
 import React, {useState} from "react"
 import {connect} from "react-redux"
-import { Typography, Button, IconButton, Badge, Divider, Dialog, DialogActions, Avatar, Grid } from '@material-ui/core';
+import { Typography, Button, IconButton, Badge, Divider, Dialog, DialogActions, Avatar, Grid, TextField, FormControl } from '@material-ui/core';
 import firebase from '../../firebase/firebase'
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
 import CloseIcon from '@material-ui/icons/Close'
+import EditRoundedIcon from '@material-ui/icons/EditRounded';
 
 function ProfileModalWindow(props){
     const openProfile = props.openProfile
     const setOpenProfile = props.setOpenProfile
-    const name = firebase.auth.currentUser ? firebase.auth.currentUser.displayName : ""
-    const email = firebase.auth.currentUser ? firebase.auth.currentUser.email : ""
+    const [name, setName] = useState(props.user.name)
+
+    //const name = firebase.auth.currentUser ? firebase.auth.currentUser.displayName : ""
+    const email = props.user.email
     const avatarAlt = props.avatarAlt ? props.avatarAlt.toUpperCase() : ""
     const [avatar, setAvatar] = useState(null)
-
+    const [enableEdit, setEnableEdit] = useState(false)
     console.log(avatar)
 
     function handleFileChange(file){
@@ -22,6 +25,17 @@ function ProfileModalWindow(props){
 
     function handleUpload(loadAvatar){
       firebase.uploadAvatarToStorage(avatar, loadAvatar)
+    }
+
+    function handleClick(setUser){
+      if (name !== firebase.auth.currentUser.displayName){
+        firebase.auth.currentUser.updateProfile({
+          displayName: name
+        })
+        setUser({ id: firebase.getCurrentUserId(), name: name, email: firebase.auth.currentUser.email, auth: true})
+      }
+      
+      setOpenProfile(false)
     }
 
     return(
@@ -56,16 +70,19 @@ function ProfileModalWindow(props){
             </Grid>
             
             <Grid item >
-              {firebase.auth.currentUser ? <Typography variant="body1" style={{textAlign: "center"}}>{name}</Typography> : null}
+              <div style={{margin: "0px auto 0px auto", maxWidth: 350, display: "flex", position: "relative", alignItems: "center"}}>
+                  {enableEdit ? <TextField value={name} label="Name" variant="outlined" onChange={(e)=>setName(e.target.value)} style={{width: "100%"}}/> : <Typography variant="h4" style={{flexGrow: 1, textAlign: "center"}}>{name}</Typography>}
+                  {!enableEdit ? <IconButton style={{position: "absolute", right: 0}} onClick={()=>setEnableEdit(!enableEdit)}><EditRoundedIcon/></IconButton> : null}
+              </div>
             </Grid>
             <Grid item>
-              {firebase.auth.currentUser ?  <Typography variant="body1" style={{textAlign: "center"}}>{email}</Typography> : null}
+              <Typography variant="body1" style={{textAlign: "center"}}>{email}</Typography>
             </Grid>
           </Grid>
           
         </div>
         <DialogActions>
-          <Button>Save Changes</Button>
+          <Button onClick={()=>handleClick(props.setUser)}>Save Changes</Button>
         </DialogActions>
       </Dialog>
     )
@@ -79,7 +96,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url})
+    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url}),
+    setUser: (obj) => dispatch({ type: "USER/LOADINFO", payload: obj })
   }
 }
 

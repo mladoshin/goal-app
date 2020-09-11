@@ -149,7 +149,11 @@ class Firebase {
   quickResultUpdate(result, id){
     try {
       this.db.ref(this.getCurrentUserId() + "/goals/" + id).update({
-        currentValue: result
+        currentValue: result,
+      });
+      this.db.ref(this.getCurrentUserId() + "/goals/" + id+"/stats").push({
+        date: Date.now(),
+        value: result
       });
     } catch (err) {
       alert(err.message)

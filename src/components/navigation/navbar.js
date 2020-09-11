@@ -86,7 +86,7 @@ function NavBar(props) {
       </AppBar>
 
       <AccountMenu setAccountAnchor={setAccountAnchor} setOpenProfile={setOpenProfile} accountAnchor={accountAnchor} setTheme={props.setTheme} theme={props.theme} clearReduxState={clearReduxState} />
-      <ProfileModalWindow setOpenProfile={setOpenProfile} openProfile={openProfile} avatarAlt={avatarAlt} />
+      {openProfile ? <ProfileModalWindow setOpenProfile={setOpenProfile} openProfile={openProfile} avatarAlt={avatarAlt} user={props.user}/> : null}
       <NotificationMenu setNotificationAnchor={setNotificationAnchor} notificationAnchor={notificationAnchor} notifications={notifications} />
       <MUIDrawer setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} drawerVariant="temporary" auth={props.user.auth} recentItems={recent} categories={props.goalCategories} />
 
