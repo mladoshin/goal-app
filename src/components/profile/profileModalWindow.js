@@ -1,4 +1,5 @@
-import React from "react"
+import React, {useState} from "react"
+import {connect} from "react-redux"
 import { Typography, Button, IconButton, Badge, Divider, Dialog, DialogActions, Avatar, Grid } from '@material-ui/core';
 import firebase from '../../firebase/firebase'
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
@@ -10,7 +11,19 @@ function ProfileModalWindow(props){
     const name = firebase.auth.currentUser ? firebase.auth.currentUser.displayName : ""
     const email = firebase.auth.currentUser ? firebase.auth.currentUser.email : ""
     const avatarAlt = props.avatarAlt ? props.avatarAlt.toUpperCase() : ""
-    
+    const [avatar, setAvatar] = useState(null)
+
+    console.log(avatar)
+
+    function handleFileChange(file){
+      setAvatar(file)
+      console.log(file)
+    }
+
+    function handleUpload(loadAvatar){
+      firebase.uploadAvatarToStorage(avatar, loadAvatar)
+    }
+
     return(
         <Dialog onClose={()=>setOpenProfile(false)} open={openProfile} fullWidth>
         <div style={{display: "flex", flexDirection: "row", padding: "5px 10px 5px 20px", alignItems: "center"}}>
@@ -30,15 +43,20 @@ function ProfileModalWindow(props){
                   vertical: 'bottom',
                   horizontal: 'right',
                 }}
-                badgeContent={<IconButton size="small" variant="contained" onClick={()=>alert("set new profile image")}><CameraAltIcon/></IconButton>}
+                badgeContent={<IconButton size="small" variant="contained"><CameraAltIcon/></IconButton>}
               >
-                <Avatar style={{width: 100, height: 100, marginLeft: "auto", marginRight: "auto"}}>{avatarAlt}</Avatar>
+                <Avatar style={{width: 100, height: 100, marginLeft: "auto", marginRight: "auto"}} src={props.avatar ? props.avatar : null}>{avatarAlt}</Avatar>
+                <input type="file" name="avatarInput" style={{height: 100, width: 100, opacity: 0, position: "absolute", zIndex: 100}} onChange={(e)=>handleFileChange(e.target.files[0])}/>
               </Badge>
               
             </Grid>
+            
+            <Grid item style={{textAlign: "center"}}>
+              {avatar ? <Button onClick={()=>handleUpload(props.loadAvatar)}>Upload</Button> : null}
+            </Grid>
+            
             <Grid item >
               {firebase.auth.currentUser ? <Typography variant="body1" style={{textAlign: "center"}}>{name}</Typography> : null}
-              
             </Grid>
             <Grid item>
               {firebase.auth.currentUser ?  <Typography variant="body1" style={{textAlign: "center"}}>{email}</Typography> : null}
@@ -53,4 +71,16 @@ function ProfileModalWindow(props){
     )
 }
 
-export default ProfileModalWindow;
+const mapStateToProps = (state) => {
+  return{
+    avatar: state.userAvatar
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url})
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileModalWindow);

@@ -174,6 +174,31 @@ class Firebase {
     }
   }
 
+  uploadAvatarToStorage(avatar, loadAvatar){
+    const uploadTask = this.storage.ref(this.getCurrentUserId()+"/avatar/avatar.jpg").put(avatar)
+      uploadTask.on("state_changed",
+        snapshot => {
+
+        },
+        error=>{
+          //errror function
+          console.log(error.message)
+        },
+        ()=>{
+          this.storage
+            .ref(this.getCurrentUserId()+"/avatar/")
+            .child("avatar.jpg")
+            .getDownloadURL()
+            .then(avatarUrl=>{
+              this.auth.currentUser.updateProfile({
+                photoURL: avatarUrl
+              })
+              loadAvatar(avatarUrl)
+            })
+        }
+      )
+  }
+
 
 }
 

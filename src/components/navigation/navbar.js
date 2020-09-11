@@ -80,7 +80,7 @@ function NavBar(props) {
             Sport Goals
                   </Typography>
           <div className={classes.grow} />
-          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} /> : <Button color="inherit" onClick={() => props.history.replace("/signin")}>Login</Button>}
+          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} url={props.avatar ? props.avatar : null} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} /> : <Button color="inherit" onClick={() => props.history.replace("/signin")}>Login</Button>}
 
         </Toolbar>
       </AppBar>
@@ -101,7 +101,8 @@ const mapStateToProps = state => {
     user: state.user,
     theme: state.theme,
     goals: state.goals,
-    goalCategories: state.goalCategories
+    goalCategories: state.goalCategories,
+    avatar: state.userAvatar
   }
 }
 

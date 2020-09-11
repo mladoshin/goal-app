@@ -33,7 +33,7 @@ function AccountToolbar(props){
 
             </Grid>
             <Grid item className={classes.gridItem} style={{marginLeft: 15}} onClick={(e)=>props.setAccountAnchor(e.currentTarget)}>
-                <MUIAvatar avatarAlt={props.avatarAlt}/>
+                <MUIAvatar avatarAlt={props.avatarAlt} url={props.url}/>
             </Grid>
         </Grid>
     )

@@ -4,7 +4,7 @@ import { Avatar } from '@material-ui/core'
 function MUIAvatar(props){
     const avatarAlt = props.avatarAlt
     return(
-        <Avatar>{avatarAlt}</Avatar>
+        <Avatar alt={avatarAlt} src={props.url}/>
     );
 }
 

@@ -28,8 +28,9 @@ function App(props) {
         setIsFirebaseInit(true)
         //console.log(firebase.auth.currentUser)
         if (firebase.getCurrentUserId()) {
-          props.setUser({ id: firebase.getCurrentUserId(), name: firebase.auth.currentUser.displayName, email: firebase.auth.currentUser.email, auth: true })
+          props.setUser({ id: firebase.getCurrentUserId(), name: firebase.auth.currentUser.displayName, email: firebase.auth.currentUser.email, auth: true})
           firebase.loadUserGoals(props.loadGoals, props.loadCategories)
+          props.loadAvatar(firebase.auth.currentUser.photoURL)
         } else {
           props.setUser({ id: firebase.getCurrentUserId(), auth: false })
         }
@@ -38,6 +39,9 @@ function App(props) {
     }
   }, [isFirebaseInit])
   
+  console.log(props.avatar)
+
+
   const DarkTheme = createMuiTheme({
     palette: {
       type: "dark"
@@ -113,7 +117,9 @@ const mapStateToProps = state => {
   return {
     theme: state.theme,
     goals: state.goals,
-    goalCategories: state.goalCategories
+    goalCategories: state.goalCategories,
+    user: state.user,
+    avatar: state.userAvatar
   }
 }
 
@@ -121,7 +127,8 @@ const mapDispatchToProps = dispatch => {
   return {
     setUser: (obj) => dispatch({ type: "USER/LOADINFO", payload: obj }),
     loadGoals: (arr) => dispatch({type: "GOALS/LOAD", payload: arr}),
-    loadCategories: (obj) => dispatch({type: "GOALS/CATEGORY/LOAD", payload: obj})
+    loadCategories: (obj) => dispatch({type: "GOALS/CATEGORY/LOAD", payload: obj}),
+    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url})
   }
 }
 
