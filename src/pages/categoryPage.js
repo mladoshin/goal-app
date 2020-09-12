@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("lg")]: {
             padding: "0px 16.6% 0px 16.6%"
         }
-        
+
     },
     fab: {
         margin: theme.spacing(2),
@@ -47,19 +47,22 @@ function CategoryPage(props) {
 
     const [openAddModal, setOpenAddModal] = useState(false)
     const [openQuickModal, setOpenQuickModal] = useState(false)
-    
+
     var goalItems = []
     var completedGoalItems = []
     props.goals.map((item, index) => {
         if (item.category === category && !item.isCompleted) {
             goalItems.push(item)
-        }else if(item.category === category && item.isCompleted){
+        } else if (item.category === category && item.isCompleted) {
             completedGoalItems.push(item)
         }
     })
+    
+
+    console.log()
 
     console.log(completedGoalItems)
-    
+
 
 
 
@@ -72,8 +75,23 @@ function CategoryPage(props) {
                 <Typography variant="body1">Category: {category}</Typography>
                 <Typography variant="body1">Filter: {filter}</Typography>
 
-                <ModalContext.Provider value={{setOpenQuickModal, openQuickModal}}>
-                    <GoalsGrid goals={goalItems} spacing={3}/>
+                <ModalContext.Provider value={{ setOpenQuickModal, openQuickModal }}>
+                    
+                    <div style={{ width: "100%", padding: "20px 0px 10px 0px", textAlign: "center" }}>
+                        <hr />
+                        <Typography variant="h3">Active Goals</Typography>
+                        <hr />
+                    </div>
+                    <GoalsGrid goals={goalItems} spacing={3} />
+                    {completedGoalItems.length ?
+                        <div style={{ width: "100%", padding: "40px 0px 10px 0px", textAlign: "center" }}>
+                            <hr />
+                            <Typography variant="h3">Completed Goals</Typography>
+                            <hr />
+                        </div>
+                    :
+                    null}
+                    <GoalsGrid goals={completedGoalItems} spacing={3} />
                 </ModalContext.Provider>
 
             </Container>
@@ -90,8 +108,8 @@ function CategoryPage(props) {
                     <AddIcon />
                 </Fab>
             </Tooltip>
-            <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} category={category}/>
-            {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal}/> : null}
+            <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} category={category} />
+            {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal} /> : null}
         </React.Fragment>
 
     );

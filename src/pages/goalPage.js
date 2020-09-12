@@ -61,8 +61,13 @@ function GoalPage(props) {
 
     function handleComplete(){
         if(parseFloat(goal.currentValue)==parseFloat(goal.targetValue)){
-            firebase.completeGoal(goal.id)
-            alert("Completed!")
+            if(goal.isCompleted){
+                firebase.uncompleteGoal(goal.id)
+            }else{
+                firebase.completeGoal(goal.id)
+            }
+            
+            
         
         }else{
             alert("You haven't completed the goal!")
@@ -88,7 +93,7 @@ function GoalPage(props) {
                             </div>
                             <div>
                                 <Button variant="contained" color="primary" onClick={()=>setOpenAddModal(true)}>Edit</Button>
-                                <Button variant="contained" style={{backgroundColor: "#388e3c", marginLeft: 10}} onClick={handleComplete}>Complete</Button>
+                                <Button variant="contained" style={{backgroundColor: goal.isCompleted ? "#f50057" : "#388e3c", marginLeft: 10, transition: "500ms linear"}} onClick={handleComplete} disableTouchRipple={true}>{goal.isCompleted ? "Uncomplete" : "Complete"}</Button>
                             </div>
                             
                         </Paper>

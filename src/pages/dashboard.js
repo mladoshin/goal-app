@@ -27,28 +27,6 @@ function DashboardPage(props) {
   const classes = useStyles();
   const [openAddModal, setOpenAddModal] = useState(false)
 
-  var completedGoals = 0
-  props.goals.map((goal, i)=>{
-    if (goal.isCompleted){
-      completedGoals++
-    }
-  })
-
-  var sortedGoals = props.goals
-  sortedGoals.sort((a, b)=>{return (a.deadline - b.deadline)})
-  console.log(sortedGoals)
-  
-  const percent = Math.floor(completedGoals/props.goals.length *100)
-  const fraction = completedGoals+"/"+props.goals.length
-
-  function authCheck(urlId, userId) {
-    console.log(urlId, userId)
-    if (urlId !== userId) {
-      return false
-    }
-    return true
-  }
-
   useEffect(() => {
     if (!isFirebaseInit) {
       firebase.isInit().then(val => {
@@ -61,6 +39,45 @@ function DashboardPage(props) {
       })
     }
   }, [isFirebaseInit])
+
+  var completedGoals = 0
+  if (props.goals){
+    console.log(props.goals)
+
+    try{
+      props.goals.map((goal, i)=>{
+        if (goal.isCompleted){
+          completedGoals++
+        }
+      })
+    }catch(err){
+
+    }
+    
+  }
+
+  var sortedGoals = props.goals ? props.goals : []
+  try{
+    sortedGoals.sort((a, b)=>{return (a.deadline - b.deadline)})
+  }catch(err){
+    console.log(err)
+  }
+    
+  
+  console.log(sortedGoals)
+  
+  const percent = isFirebaseInit ? Math.floor(completedGoals/props.goals.length *100) : 0
+  const fraction = isFirebaseInit ? completedGoals+"/"+props.goals.length : 0
+
+  function authCheck(urlId, userId) {
+    console.log(urlId, userId)
+    if (urlId !== userId) {
+      return false
+    }
+    return true
+  }
+
+  
 
 
   return (

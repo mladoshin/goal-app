@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 
 function NavBar(props) {
   const classes = useStyles();
-  const notifications = ["Check out our Social Media", "Beta version 1.0 is Launched!", "Check out the dashboard"]
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const [accountAnchor, setAccountAnchor] = useState(null);
@@ -39,7 +38,7 @@ function NavBar(props) {
   const [openProfile, setOpenProfile] = useState(false)
 
   const nameArr = props.user.name ? props.user.name.split(' ') : ["", ""]
-  const avatarAlt = nameArr[0][0] + nameArr[1][0]
+  const avatarAlt = nameArr[0][0]
 
   function clearReduxState() {
     props.removeUserInfo()
@@ -80,14 +79,14 @@ function NavBar(props) {
             Sport Goals
                   </Typography>
           <div className={classes.grow} />
-          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} url={props.avatar ? props.avatar : null} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} /> : <Button color="inherit" onClick={() => props.history.replace("/signin")}>Login</Button>}
+          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} url={props.avatar ? props.avatar : null} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} notificationsNumber={props.notifications.length}/> : <Button color="inherit" onClick={() => props.history.replace("/signin")}>Login</Button>}
 
         </Toolbar>
       </AppBar>
 
       <AccountMenu setAccountAnchor={setAccountAnchor} setOpenProfile={setOpenProfile} accountAnchor={accountAnchor} setTheme={props.setTheme} theme={props.theme} clearReduxState={clearReduxState} />
       {openProfile ? <ProfileModalWindow setOpenProfile={setOpenProfile} openProfile={openProfile} avatarAlt={avatarAlt} user={props.user}/> : null}
-      <NotificationMenu setNotificationAnchor={setNotificationAnchor} notificationAnchor={notificationAnchor} notifications={notifications} />
+      <NotificationMenu setNotificationAnchor={setNotificationAnchor} notificationAnchor={notificationAnchor} notifications={props.notifications} />
       <MUIDrawer setDrawerOpen={setDrawerOpen} drawerOpen={drawerOpen} drawerVariant="temporary" auth={props.user.auth} recentItems={recent} categories={props.goalCategories} />
 
     </React.Fragment>
@@ -102,7 +101,8 @@ const mapStateToProps = state => {
     theme: state.theme,
     goals: state.goals,
     goalCategories: state.goalCategories,
-    avatar: state.userAvatar
+    avatar: state.userAvatar,
+    notifications: state.notifications
   }
 }
 

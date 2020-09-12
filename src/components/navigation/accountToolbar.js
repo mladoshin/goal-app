@@ -20,13 +20,14 @@ const useStyles = makeStyles((theme) => ({
 
 function AccountToolbar(props){
     const classes = useStyles();
+    console.log(props.avatarAlt)
 
     return(
         <Grid container className={classes.grid}>
             <Grid item className={classes.gridItem}>
 
                 <IconButton onClick={(e)=>props.setNotificationAnchor(e.currentTarget)}>
-                    <Badge badgeContent={4} color="secondary">
+                    <Badge badgeContent={props.notificationsNumber} color="secondary">
                         <NotificationsIcon/>
                     </Badge>
                 </IconButton>

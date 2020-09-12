@@ -20,7 +20,7 @@ function NotificationMenu(props) {
             keepMounted
             open={Boolean(notificationAnchor)}
             onClose={() => setNotificationAnchor(null)}
-            style={{ position: "absolute", right: "50px", top: 60 }}
+            style={{ position: "absolute", right: "50px", top: 60, width: "300px !important" }}
         >
             {notificationItems}
 

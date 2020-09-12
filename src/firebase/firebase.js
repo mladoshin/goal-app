@@ -146,6 +146,16 @@ class Firebase {
     }
   }
 
+  uncompleteGoal(id) {
+    try {
+      this.db.ref(this.getCurrentUserId() + "/goals/" + id).update({
+        isCompleted: false
+      });
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
   quickResultUpdate(result, id){
     try {
       this.db.ref(this.getCurrentUserId() + "/goals/" + id).update({
@@ -173,6 +183,7 @@ class Firebase {
         deadline: goal.deadline,
         description: goal.description
       });
+      this.quickResultUpdate(goal.startValue, goal.id) //push currentValue to goal stats
     } catch (err) {
       alert(err.message)
     }
