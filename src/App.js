@@ -39,7 +39,7 @@ function App(props) {
     }
   }, [isFirebaseInit])
   
-  console.log(props.avatar)
+  console.log(props.goalCategories)
 
 
   const DarkTheme = createMuiTheme({

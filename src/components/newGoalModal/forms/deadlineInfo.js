@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react"
 import { FormControl, TextField, Switch } from '@material-ui/core'
+import {makeStyles} from "@material-ui/core/styles";
 import FormContext from "../context/formContext"
 import DateFnsUtils from '@date-io/date-fns';
 import {
@@ -8,7 +9,39 @@ import {
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 
+
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+      minWidth: 120,
+      margin: theme.spacing(1)
+    },
+    textInput: {
+        margin: theme.spacing(1)
+    },
+    container: {
+        [theme.breakpoints.up("xs")]: {
+            height: 300
+        },
+        [theme.breakpoints.up("sm")]: {
+            height: 350
+        },
+        [theme.breakpoints.up("md")]: {
+            
+        },
+        [theme.breakpoints.up("ld")]: {
+
+        },
+        [theme.breakpoints.up("xl")]: {
+
+        }
+    }
+  }));
+
+
+
+
 function DeadlineForm() {
+    const classes = useStyles()
     const form = useContext(FormContext)
     console.log(form)
 
@@ -25,7 +58,7 @@ function DeadlineForm() {
     }
 
     return (
-        <form style={{ paddingTop: 20, display: "flex", flexDirection: "column" }}>
+        <form style={{ paddingTop: 20, display: "flex", flexDirection: "column" }} className={classes.container}>
             <FormControl>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker

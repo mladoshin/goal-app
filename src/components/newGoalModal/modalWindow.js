@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     instructions: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1)
+    },
+    formDialog: {
+        
     }
 }));
 
@@ -63,7 +66,12 @@ function ModalWindow(props) {
             if (goalName && category && type && units && targetValue && startValue && (deadline > Date.now())) {
 
                 if (props.goal) {
-                    firebase.updateGoal({ name: goalName, category, type, units, targetValue, startValue, deadline, description, id: props.goal.id })
+                    console.log(props.goal.startValue, startValue, props.goal.targetValue)
+                    if(startValue >= Math.min(props.goal.startValue, props.goal.targetValue)  && startValue <= Math.max(props.goal.targetValue, props.goal.startValue)){
+                        firebase.updateGoal({ name: goalName, category, type, units, targetValue, startValue, deadline, description, id: props.goal.id })
+                    }else{
+                        alert("Current value should be in the valid range!")
+                    }
                 } else {
                     firebase.addNewGoal({ name: goalName, category, type, units, targetValue, startValue, deadline, description })
                     alert("New goal has been created!")
@@ -93,7 +101,7 @@ function ModalWindow(props) {
     }
 
     return (
-        <Dialog onClose={() => handleCloseModal(setOpenAddModal)} open={openAddModal} fullWidth maxWidth="md">
+        <Dialog onClose={() => handleCloseModal(setOpenAddModal)} open={openAddModal} fullWidth maxWidth="md" className={classes.formDialog}>
             <div style={{ display: "flex", flexDirection: "row", padding: "5px 10px 5px 20px", alignItems: "center" }}>
                 <Typography variant="h4" style={{ flexGrow: 1, lineHeight: "48px" }}>{header}</Typography>
 

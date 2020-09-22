@@ -10,12 +10,15 @@ import firebase from '../firebase/firebase';
 import ProgressCard from '../components/goalDashboardComponents/progressCard'
 import TimeCard from '../components/goalDashboardComponents/timeCard'
 import ModalWindow from '../components/newGoalModal/modalWindow'
+import ProgressChart from "../components/goalDashboardComponents/progressChart";
+
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
     gridContainer: {
-        
+
     },
-    cardPaper : {
+    cardPaper: {
         [theme.breakpoints.up("xs")]: {
             padding: 10
         },
@@ -43,13 +46,30 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("lg")]: {
             padding: "0px 16.6% 0px 16.6%"
         }
+    },
+    goalHeader: {
+        display: "flex", 
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    goalGen: {
+        flexGrow: 1
+    },
+    goalActions: {
+
+    },
+    btnComplete: {
+        marginLeft: 10,
+        transition: "500ms linear"
     }
-  }));
+
+
+}));
 
 function GoalPage(props) {
     const classes = useStyles()
     const [openAddModal, setOpenAddModal] = useState(false)
-    let { category } = useParams()
+    //let { category } = useParams()
     let { goalid } = useParams()
     var goal = {}
 
@@ -58,23 +78,36 @@ function GoalPage(props) {
             goal = item
         }
     })
+    //console.log(goal)
 
-    function handleComplete(){
-        if(parseFloat(goal.currentValue)==parseFloat(goal.targetValue)){
-            if(goal.isCompleted){
+    function handleComplete() {
+        if (parseFloat(goal.currentValue) == parseFloat(goal.targetValue) || goal.isCompleted) {
+            if (goal.isCompleted) {
                 firebase.uncompleteGoal(goal.id)
-            }else{
+            } else {
                 firebase.completeGoal(goal.id)
             }
-            
-            
-        
-        }else{
+
+        } else {
             alert("You haven't completed the goal!")
         }
     }
-    
-    const progress = (goal.currentValue-goal.startValue) / Math.abs(goal.targetValue-goal.startValue) * 100
+
+    //Goal Dashboard Component --> Goal Header
+    const GoalHeader = (
+        <Paper className={clsx(classes.cardPaper, classes.goalHeader)} elevation={3}>
+            <div className={classes.goalGen}>
+                <Typography variant="h3">{goal.name}</Typography>
+                <Typography variant="body1">Category: {goal.category}</Typography>
+            </div>
+            <div className={classes.goalActions}>
+                <Button variant="contained" color="primary" onClick={() => setOpenAddModal(true)}>Edit</Button>
+                <Button variant="contained" className={classes.btnComplete} style={{ backgroundColor: goal.isCompleted ? "#f50057" : "#388e3c"}} onClick={handleComplete} disableTouchRipple={true}>{goal.isCompleted ? "Uncomplete" : "Complete"}</Button>
+            </div>
+        </Paper>
+    )
+
+    const progress = (goal.currentValue - goal.startValue) / Math.abs(goal.targetValue - goal.startValue) * 100
     const progressPercent = Math.floor(Math.abs(progress))
 
     return (
@@ -82,39 +115,37 @@ function GoalPage(props) {
             <NavBar />
             <Container component="main" maxWidth="xl" className={classes.mainContainer}>
                 <CssBaseline />
-                
+
                 <Grid container spacing={1} className={classes.gridContainer}>
                     {/* General Info Card component */}
                     <Grid item xs={12}>
-                        <Paper className={classes.cardPaper} elevation={3} style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-                            <div style={{flexGrow: 1}}>
-                                <Typography variant="h3">{goal.name}</Typography>
-                                <Typography variant="body1">Category: {category}</Typography>
-                            </div>
-                            <div>
-                                <Button variant="contained" color="primary" onClick={()=>setOpenAddModal(true)}>Edit</Button>
-                                <Button variant="contained" style={{backgroundColor: goal.isCompleted ? "#f50057" : "#388e3c", marginLeft: 10, transition: "500ms linear"}} onClick={handleComplete} disableTouchRipple={true}>{goal.isCompleted ? "Uncomplete" : "Complete"}</Button>
-                            </div>
-                            
+                        {GoalHeader}   {/* Goal Header
+                         Component */}
+                    </Grid>
+
+                    {/* Progress Card component */}
+                    <Grid item xs={4}>
+                        <ProgressCard percent={progressPercent} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units} />
+
+                    </Grid>
+
+                    {/* Time Progress Card component */}
+                    <Grid item xs={8}>
+                        <TimeCard deadline={goal.deadline} dateCreated={goal.dateCreated} />
+
+                    </Grid>
+
+                    {/* Description card component */}
+                    <Grid item xs={12}>
+                        <Paper className={classes.cardPaper} style={{ display: goal.description ? "inherit" : "none" }} elevation={3}>
+                            <Typography variant="body1">Description: {goal.description}</Typography>
                         </Paper>
                     </Grid>
 
-                     {/* Progress Card component */}
-                    <Grid item xs={4}>
-                        <ProgressCard percent={progressPercent} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units}/>
-                        
-                    </Grid>
-
-                     {/* Time Progress Card component */}
-                    <Grid item xs={8}>
-                        <TimeCard deadline={goal.deadline} dateCreated={goal.dateCreated}/>
-                        
-                    </Grid>
-
-                     {/* Description card component */}
+                    {/*Chart progress statistics component*/}
                     <Grid item xs={12}>
-                        <Paper className={classes.cardPaper} style={{display: goal.description ? "inherit" : "none"}} elevation={3}>
-                            <Typography variant="body1">Description: {goal.description}</Typography>
+                        <Paper className={classes.cardPaper} elevation={3}>
+                            <ProgressChart data={goal.stats} minValue={goal.startValue} targetValue={goal.targetValue} reversed={goal.targetValue < goal.startValue ? true : false} height={300}/>
                         </Paper>
                     </Grid>
 
@@ -122,7 +153,7 @@ function GoalPage(props) {
 
 
             </Container>
-            {openAddModal ? <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} goal={goal}/> : null}
+            {openAddModal ? <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} goal={goal} /> : null}
         </React.Fragment>
 
     );

@@ -114,9 +114,9 @@ class Firebase {
   }
 
   addNewGoal(props) {
-    console.log(props)
+    //console.log(props)
     try {
-      this.db.ref(this.getCurrentUserId() + "/goals").push({
+      const id = this.db.ref(this.getCurrentUserId() + "/goals").push({
         name: props.name,
         category: props.category,
         type: props.type,
@@ -130,6 +130,8 @@ class Firebase {
         isCompleted: false,
         isArchieved: false
       });
+
+      this.quickResultUpdate(props.startValue, id.key)
     } catch (err) {
       alert(err.message)
     }

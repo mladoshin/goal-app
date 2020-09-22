@@ -12,6 +12,7 @@ import GoalsGrid from '../components/grids/goalsGrid'
 import ModalWindow from '../components/newGoalModal/modalWindow'
 import QuickModal from "../components/newGoalModal/quickModal";
 import ModalContext from '../components/newGoalModal/context/quickModalContext'
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
@@ -37,6 +38,16 @@ const useStyles = makeStyles((theme) => ({
         position: 'fixed',
         bottom: theme.spacing(2),
         right: theme.spacing(3),
+    },
+    subheader: {
+        width: "100%",
+        textAlign: "center"
+    },
+    subheaderActive: {
+        padding: "20px 0px 10px 0px"
+    },
+    subheaderCompleted: {
+        padding: "40px 0px 10px 0px"
     }
 }));
 
@@ -57,7 +68,7 @@ function CategoryPage(props) {
             completedGoalItems.push(item)
         }
     })
-    
+
 
     console.log()
 
@@ -76,21 +87,21 @@ function CategoryPage(props) {
                 <Typography variant="body1">Filter: {filter}</Typography>
 
                 <ModalContext.Provider value={{ setOpenQuickModal, openQuickModal }}>
-                    
-                    <div style={{ width: "100%", padding: "20px 0px 10px 0px", textAlign: "center" }}>
+
+                    <div className={clsx(classes.subheader, classes.subheaderActive)}>
                         <hr />
                         <Typography variant="h3">Active Goals</Typography>
                         <hr />
                     </div>
                     <GoalsGrid goals={goalItems} spacing={3} />
                     {completedGoalItems.length ?
-                        <div style={{ width: "100%", padding: "40px 0px 10px 0px", textAlign: "center" }}>
+                        <div className={clsx(classes.subheader, classes.subheaderCompleted)}>
                             <hr />
                             <Typography variant="h3">Completed Goals</Typography>
                             <hr />
                         </div>
-                    :
-                    null}
+                        :
+                        null}
                     <GoalsGrid goals={completedGoalItems} spacing={3} />
                 </ModalContext.Provider>
 

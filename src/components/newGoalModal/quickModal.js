@@ -30,16 +30,20 @@ function QuickModal(props) {
     const [newCurrentValue, setNewCurrentValue] = useState(openQuickModal.currentValue)
     const classes = useStyles()
 
-    const handleBtnClick = () => {
+    //console.log(openQuickModal)
 
-    }
 
     function handleCloseModal(setOpenAddModal) {
         setOpenQuickModal(false)
     }
 
-    function handleResultUpdate(result, goalId){
-        firebase.quickResultUpdate(result, goalId)   
+    function handleResultUpdate(result, goal){
+        if(result >= Math.min(goal.startValue, goal.targetValue)  && result <= Math.max(goal.targetValue, goal.startValue)){
+            firebase.quickResultUpdate(result, goal.id)   
+        }else{
+            alert("Current value should be in the valid range!")
+        }
+        
     }
     
     return (
@@ -69,7 +73,7 @@ function QuickModal(props) {
             </div>
             <DialogActions style={{ padding: "0px 30px 20px 30px" }}>
                     <Button variant="outlined" color="primary" onClick={()=>handleCloseModal(setOpenQuickModal)}>Cancel</Button>
-                    <Button variant="contained" color="primary" onClick={()=>handleResultUpdate(newCurrentValue, openQuickModal.id)}>Update</Button>
+                    <Button variant="contained" color="primary" onClick={()=>handleResultUpdate(newCurrentValue, openQuickModal)}>Update</Button>
             </DialogActions>
         </Dialog>
     )

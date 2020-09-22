@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 function AccountToolbar(props){
     const classes = useStyles();
-    console.log(props.avatarAlt)
 
     return(
         <Grid container className={classes.grid}>

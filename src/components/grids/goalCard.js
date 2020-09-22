@@ -98,6 +98,10 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("lg")]: {
             width: "60%"
         }
+    },
+    paper: {
+        width: "100%",
+        height: "100%"
     }
 }));
 
@@ -118,11 +122,13 @@ function GoalsCard(props) {
     
     const progress = Math.abs(currentValue-startValue) / Math.abs(targetValue-startValue) * 100
     const progressPercent = Math.floor(Math.abs(progress))
+
     //console.log(startValue, currentValue, targetValue)
     //console.log("Fraction: " + progress)
     //console.log("Percent: " + progressPercent)
+
     return (
-        <Paper style={{ width: "100%", height: "100%"}} elevation={3}>
+        <Paper className={classes.paper} elevation={3}>
             <Grid item container direction="row">
                 <Grid item xs={4} className={classes.gridContainer}>
                     <ProgressCard percent={progressPercent} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units}/>  {/* Progress card component for displaying the progress on the goal */}
@@ -130,7 +136,7 @@ function GoalsCard(props) {
 
                 <Grid item container direction="column" xs={8} justify="space-between" className={classes.sideGridContainer}>
                     <Grid item className={classes.sideGridItem}>
-                        <HeaderCard name={goal.name} variant="h4" category={goal.category} id={goal.id} setOpenQuickModal={modal.setOpenQuickModal} openQuickModal={modal.openQuickModal} currentValue={goal.currentValue} units={goal.units}/>
+                        <HeaderCard goal={goal} variant="h4" setOpenQuickModal={modal.setOpenQuickModal} openQuickModal={modal.openQuickModal} />
                     </Grid>
 
 

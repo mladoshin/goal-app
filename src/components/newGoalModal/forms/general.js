@@ -11,6 +11,23 @@ const useStyles = makeStyles((theme) => ({
     },
     textInput: {
         margin: theme.spacing(1)
+    },
+    container: {
+        [theme.breakpoints.up("xs")]: {
+            height: 300
+        },
+        [theme.breakpoints.up("sm")]: {
+            height: 350
+        },
+        [theme.breakpoints.up("md")]: {
+            
+        },
+        [theme.breakpoints.up("ld")]: {
+
+        },
+        [theme.breakpoints.up("xl")]: {
+
+        }
     }
   }));
 
@@ -21,7 +38,7 @@ function GeneralForm() {
     let {goalid} = useParams()
     console.log(form)
     return (
-        <form style={{paddingTop: 20, display: "flex", flexDirection: "column"}}>
+        <form style={{paddingTop: 20, display: "flex", flexDirection: "column"}} className={classes.container}>
             <FormControl>
                 <TextField id="outlined-basic" label="Goal Name" variant="outlined"  value={form.goalName} onChange={(e)=>form.setGoalName(e.target.value)} className={classes.textInput}/>
             </FormControl>

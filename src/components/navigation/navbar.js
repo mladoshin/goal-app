@@ -44,6 +44,7 @@ function NavBar(props) {
     props.removeUserInfo()
     props.clearGoalsState()
     props.clearCategoriesState()
+    props.clearAvatar()
   }
 
   function sortFunction(a, b) {
@@ -111,7 +112,8 @@ const mapDispatchToProps = dispatch => {
     removeUserInfo: () => { dispatch({ type: "USER/LOADINFO", payload: { id: null, auth: false } }) },
     setTheme: (str) => dispatch({ type: "THEME/CHANGE", payload: str }),
     clearGoalsState: () => dispatch({ type: "GOALS/LOAD", payload: {} }),
-    clearCategoriesState: () => dispatch({ type: "GOALS/CATEGORY/LOAD", payload: [] })
+    clearCategoriesState: () => dispatch({ type: "GOALS/CATEGORY/LOAD", payload: [] }),
+    clearAvatar: ()=>dispatch({ type: "AVATAR/LOAD", payload: "" })
   }
 }
 

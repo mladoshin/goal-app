@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Typography, IconButton, Button, Step, Stepper, StepLabel } from '@material-ui/core'
 import { makeStyles } from "@material-ui/core/styles";
 import GeneralForm from './forms/general'
@@ -16,27 +16,58 @@ const useStyles = makeStyles((theme) => ({
     instructions: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1)
+    },
+    stepLabel: {
+        [theme.breakpoints.down("sm")]: {
+            /*fontSize: 10*/
+        }
     }
+
   }));
 
 function ModalStepper(props) {
     const setActiveStep = props.setActiveStep;
     const activeStep = props.activeStep;
     const classes = useStyles()
+    const [isMobile, setIsMobile] = useState(false)
+
+    function handleResize(){
+        if(window.innerWidth < 600){
+            if(!isMobile){
+                setIsMobile(true)
+            }
+        }else{
+            if(isMobile){
+                setIsMobile(false)
+            }
+        }
+    }
+    console.log(isMobile)
+
+    useEffect(()=>{
+        window.addEventListener("resize", ()=>handleResize())
+        
+    })
+
+    useEffect(()=>{
+        handleResize()
+    }, [])
+    
+
     return (
         <React.Fragment>
-            <Stepper activeStep={activeStep} style={{padding: 0, maxWidth: "100%", overflowX: "scroll"}}>
+            <Stepper activeStep={activeStep} style={{padding: 0, maxWidth: "100%"}}>
                 <Step>
-                    <StepLabel>General</StepLabel>
+                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "General" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel>Current and target values</StepLabel>
+                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Current and target values" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel>Deadline</StepLabel>
+                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Deadline" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel>Additional info</StepLabel>
+                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Additional Info" : "" }</StepLabel>
                 </Step>
 
             </Stepper>

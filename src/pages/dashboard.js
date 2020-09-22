@@ -9,6 +9,8 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import ModalWindow from '../components/newGoalModal/modalWindow'
 import ProgressOverview from '../components/dashboardComponents/progressOverview'
+import CategoryChart from "../components/dashboardComponents/categoriesChart";
+import UpcomingDeadlines from "../components/dashboardComponents/upcomingDeadlines"
 
 const useStyles = makeStyles((theme) => ({
   fab: {
@@ -33,12 +35,28 @@ function DashboardPage(props) {
         setIsFirebaseInit(true)
         if (authCheck(userid, firebase.getCurrentUserId())) {
           firebase.loadUserGoals(props.loadGoals, props.loadCategories)
+          props.loadAvatar(firebase.auth.currentUser.photoURL)
         }else{
           props.history.replace("/404")
         }
       })
     }
   }, [isFirebaseInit])
+
+  function deadlineSort(a, b){
+    let comparison = 0
+    console.log(a.deadline, b.deadline)
+    if(a.category < b.category){
+      comparison = -1
+    }
+    if(a.category > b.category){
+      comparison = 1
+    }
+    if(comparison==1){
+      console.log("Swap")
+    }
+    return comparison
+  }
 
   var completedGoals = 0
   if (props.goals){
@@ -56,13 +74,18 @@ function DashboardPage(props) {
     
   }
 
-  var sortedGoals = props.goals ? props.goals : []
+  var sortedGoals = []
   try{
-    sortedGoals.sort((a, b)=>{return (a.deadline - b.deadline)})
-  }catch(err){
-    console.log(err)
-  }
-    
+    props.goals.map((goal, iindex)=>{
+      if (!goal.isCompleted){
+        sortedGoals.push(goal)
+      }
+    })
+  }catch(err){}
+  
+  sortedGoals.sort((a, b)=>a.deadline-b.deadline)
+
+
   
   console.log(sortedGoals)
   
@@ -89,13 +112,15 @@ function DashboardPage(props) {
           {/*1st Row*/}
           <Grid item xs={false} sm={false} md={1} lg={2} xl={2}></Grid>
 
-          <Grid item xs={6} sm={4} md={3} lg={3} xl={3} style={{ padding: "1em" }}>
+          <Grid item xs={12} sm={12} md={4} lg={3} xl={3} style={{ padding: "1em" }}>
             <Card style={{ width: "100%"}} elevation={3}>
               <ProgressOverview percent={percent} fraction={fraction}/>
             </Card>
           </Grid>
-          <Grid item xs={6} sm={8} md={7} lg={5} xl={5} style={{ padding: "1em" }}>
-            <Card style={{ width: "100%", height: 300 }} elevation={3}></Card>
+          <Grid item xs={12} sm={12} md={6} lg={5} xl={5} style={{ padding: "1em" }}>
+            <Card style={{ width: "100%", height: "400px", padding: 20 }} elevation={3}>
+              <CategoryChart categories={props.goalCategories}/>
+            </Card>
           </Grid>
 
           <Grid item xs={false} sm={false} md={1} lg={2} xl={2}></Grid>
@@ -104,7 +129,9 @@ function DashboardPage(props) {
           <Grid item xs={false} sm={false} md={1} lg={2} xl={2}></Grid>
 
           <Grid item xs={6} sm={6} md={5} lg={4} xl={4} style={{ padding: "1em" }}>
-            <Card style={{ width: "100%", height: 300 }} elevation={3}></Card>
+            <Card style={{ width: "100%", height: 300, padding: 20   }} elevation={3}>
+              <UpcomingDeadlines items={sortedGoals}/>
+            </Card>
           </Grid>
           <Grid item xs={6} sm={6} md={5} lg={4} xl={4} style={{ padding: "1em" }}>
             <Card style={{ width: "100%", height: 300 }} elevation={3}></Card>
@@ -122,12 +149,14 @@ function DashboardPage(props) {
           alert("Verify your email first!")
         }
         
-        }}>
+        }} style={{position: "fixed"}}>
         <Fab color="secondary" className={classes.absolute}>
           <AddIcon />
         </Fab>
       </Tooltip>
       <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal}/>
+
+
     </React.Fragment>
 
   );
@@ -146,7 +175,8 @@ const mapDispatchToProps = dispatch => {
   return {
     setUser: (obj) => dispatch({ type: "USER/LOADINFO", payload: obj }),
     loadGoals: (arr) => dispatch({ type: "GOALS/LOAD", payload: arr }),
-    loadCategories: (arr) => dispatch({ type: "GOALS/CATEGORY/LOAD", payload: arr })
+    loadCategories: (arr) => dispatch({ type: "GOALS/CATEGORY/LOAD", payload: arr }),
+    loadAvatar: (url) => dispatch({type: "AVATAR/LOAD", payload: url })
   }
 }
 

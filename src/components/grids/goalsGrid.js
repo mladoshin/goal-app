@@ -30,7 +30,6 @@ function GoalsGrid(props){
         return(
             <Grid item xs={12} className={classes.gridItem} key={index}>
                 <GoalCard goal={goal}/>
-                {/* <GoalCard goal={goal}/> */}
             </Grid>
         )
     })

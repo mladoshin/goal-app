@@ -26,7 +26,8 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("lg")]: {
             padding: 20
         }
-    }
+    },
+    
 }));
 
 const categoryIcon = (category) => {
@@ -45,19 +46,19 @@ const categoryIcon = (category) => {
 
 function HeaderCard(props) {
     const classes = useStyles()
-    const name = props.name
-    const category = props.category
-    const variant = props.variant
+    const name = props.goal.name
+    const category = props.goal.category
+    const variant = props.goal.variant
     const icon = categoryIcon(category)
-    const goalId = props.id
-    console.log(props.openQuickModal)
+    const goalId = props.goal.id
+    console.log(props.goal)
 
     return (
         <Paper className={classes.cardPaper} style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
             {icon}
             <Typography variant={variant} style={{flexGrow: 1, marginLeft: 5}}>{name}</Typography>
 
-            <Button variant="outlined" style={{minWidth: 0, width: 36, borderColor: "#4caf50", marginRight: 15}} onClick={()=>props.setOpenQuickModal({currentValue: props.currentValue, units: props.units, id: goalId})}>
+            <Button variant="outlined" style={{minWidth: 0, width: 36, borderColor: "#4caf50", marginRight: 15}} onClick={()=>props.setOpenQuickModal({currentValue: props.goal.currentValue, units: props.goal.units, id: props.goal.id, startValue: props.goal.startValue, targetValue: props.goal.targetValue})}>
                 <AddRoundedIcon/>
             </Button>
             

@@ -1,24 +1,50 @@
 import React from "react"
 import { Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles';
 import {
     CircularProgressbarWithChildren,
     buildStyles
 } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
+const useStyles = makeStyles((theme) => ({
+    wrapper: {
+        display: "flex",
+        flexDirection: "column",
+        [theme.breakpoints.up("xs")]: {
+            padding: 20
+        },
+        [theme.breakpoints.up("md")]: {
+            padding: 10
+        }
+    },
+    progressWrapper: {
+        width: 300, 
+        marginLeft: "auto", 
+        marginRight: "auto",
+        [theme.breakpoints.up("xs")]: {
+            width: 300
+        },
+        [theme.breakpoints.up("md")]: {
+            width: 250
+        }
+    }
+  }));
+
 function ProgressOverview(props) {
     const percent = props.percent
     const fraction = props.fraction
     const variant = props.variant
+    const classes = useStyles();
 
     return (
-        <div style={{ display: "flex", flexDirection: "column", padding: 20 }}>
+        <div className={classes.wrapper}>
 
             <div style={{ textAlign: "center", marginBottom: 20 }}> {/*Some Text Block*/}
                 <Typography variant="h5">Progress Overview</Typography>
             </div>
 
-            <div style={{ maxWidth: 300, marginLeft: "auto", marginRight: "auto" }}>   {/*Progress Bar Container*/}
+            <div className={classes.progressWrapper}>   {/*Progress Bar Container*/}
                 <CircularProgressbarWithChildren
                     value={percent}
                     text={fraction}
