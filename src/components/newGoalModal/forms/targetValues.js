@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1)
     },
     container: {
+        paddingTop: 20,
+        display: "flex",
+        flexDirection: "column",
         [theme.breakpoints.up("xs")]: {
             height: 300
         },
@@ -19,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
             height: 350
         },
         [theme.breakpoints.up("md")]: {
-            
+
         },
         [theme.breakpoints.up("ld")]: {
 
@@ -33,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
 function ValuesForm(props) {
     const classes = useStyles()
     const form = useContext(FormContext)
-    console.log(form)
+    console.log(form.isUpdating)
+
     return (
-        <form style={{ paddingTop: 20, display: "flex", flexDirection: "column" }} className={classes.container}>
+        <form className={classes.container}>
             <FormControl variant="outlined" className={classes.formControl}>
 
                 <InputLabel id="demo-simple-select-outlined-label">Units</InputLabel>
@@ -58,35 +62,78 @@ function ValuesForm(props) {
                     <MenuItem value="kg" style={{ display: form.type !== "weight" ? "none" : "block" }}>kg</MenuItem>
                     <MenuItem value="g" style={{ display: form.type !== "weight" ? "none" : "block" }}>g</MenuItem>
 
+                    <MenuItem value="kg" style={{ display: form.type !== "weightreps" ? "none" : "block" }}>kg * reps</MenuItem>
+                    <MenuItem value="g" style={{ display: form.type !== "weightreps" ? "none" : "block" }}>g * reps</MenuItem>
+
                 </Select>
             </FormControl>
-            <FormControl>
-                <TextField 
-                id="outlined-basic" 
-                label="Target value" 
-                variant="outlined" 
-                value={form.targetValue} 
-                onChange={(e) => form.setTargetValue(e.target.value)} 
-                className={classes.textInput} 
-                InputProps={{
-                    endAdornment: <InputAdornment position="end">{form.units}</InputAdornment>,
-                }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField 
-                id="outlined-basic" 
-                label={form.isUpdating ? "Current value" : "Start value"}
-                variant="outlined" 
-                value={form.startValue} 
-                onChange={(e) => form.setStartValue(e.target.value)} 
-                className={classes.textInput} 
-                InputProps={{
-                    endAdornment: <InputAdornment position="end">{form.units}</InputAdornment>,
-                }}/>
-            </FormControl>
 
-            
+            <div style={{ display: "flex", flexDirection: "row" }}>
+
+                <FormControl style={{ width: "100%" }}>
+                    <TextField
+                        id="outlined-basic-1"
+                        label="Target value"
+                        variant="outlined"
+                        value={form.targetValue}
+                        onChange={(e) => form.setTargetValue(e.target.value)}
+                        className={classes.textInput}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">{form.units}</InputAdornment>,
+                        }}
+                    />
+                </FormControl>
+
+                {form.type == "weightreps" ?
+                    <FormControl style={{ width: "100%"}}>
+                        <TextField
+                            id="outlined-basic-2"
+                            label="Target reps value"
+                            variant="outlined"
+                            value={form.targetRepsValue}
+                            onChange={(e) => form.setTargetRepsValue(e.target.value)}
+                            className={classes.textInput}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">reps</InputAdornment>,
+                            }} />
+                    </FormControl> : null}
+
+            </div>
+
+
+            <div style={{ display: "flex", flexDirection: "row" }}>
+                <FormControl style={{ width: "100%" }}>
+                    <TextField
+                        id="outlined-basic-3"
+                        label={form.isUpdating ? "Current value" : "Start value"}
+                        variant="outlined"
+                        value={form.startValue}
+                        onChange={(e) => form.setStartValue(e.target.value)}
+                        className={classes.textInput}
+                        InputProps={{
+                            endAdornment: <InputAdornment position="end">{form.units}</InputAdornment>,
+                        }} />
+                </FormControl>
+
+                {form.type == "weightreps" ?
+                    <FormControl style={{ width: "100%", flexBasis: "100%" }}>
+                        <TextField
+                            id="outlined-basic-4"
+                            label={form.isUpdating ? "Current reps value" : "Start reps value"}
+                            variant="outlined"
+                            value={form.startRepsValue}
+                            onChange={(e) => form.setStartRepsValue(e.target.value)}
+                            className={classes.textInput}
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">reps</InputAdornment>,
+                            }} />
+                    </FormControl>
+                    : null}
+            </div>
+
+
+
+
 
         </form>
     )

@@ -1,10 +1,7 @@
 import React from "react"
 import { Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
-import {
-    CircularProgressbarWithChildren,
-    buildStyles
-} from "react-circular-progressbar";
+import { CircularProgressbarWithChildren, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +25,14 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("md")]: {
             width: 250
         }
+    },
+    headerContainer: {
+        textAlign: "center", 
+        marginBottom: 20
+    },
+    bottomContainer: {
+        textAlign: "center", 
+        marginTop: 20
     }
   }));
 
@@ -40,7 +45,7 @@ function ProgressOverview(props) {
     return (
         <div className={classes.wrapper}>
 
-            <div style={{ textAlign: "center", marginBottom: 20 }}> {/*Some Text Block*/}
+            <div className={classes.headerContainer}> {/*Some Text Block*/}
                 <Typography variant="h5">Progress Overview</Typography>
             </div>
 
@@ -56,7 +61,7 @@ function ProgressOverview(props) {
                 </CircularProgressbarWithChildren>
             </div>
 
-            <div style={{ textAlign: "center", marginTop: 20 }}> {/*Some Text Block*/}
+            <div className={classes.bottomContainer}> {/*Some Text Block*/}
                 <Typography>Hello, World!</Typography>
             </div>
         </div>

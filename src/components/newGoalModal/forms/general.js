@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1)
     },
     container: {
+        paddingTop: 20, 
+        display: "flex", 
+        flexDirection: "column",
         [theme.breakpoints.up("xs")]: {
             height: 300
         },
@@ -36,9 +39,10 @@ function GeneralForm() {
     const form = useContext(FormContext)
     let {category} = useParams()
     let {goalid} = useParams()
-    console.log(form)
+    //console.log(form)
+    
     return (
-        <form style={{paddingTop: 20, display: "flex", flexDirection: "column"}} className={classes.container}>
+        <form className={classes.container}>
             <FormControl>
                 <TextField id="outlined-basic" label="Goal Name" variant="outlined"  value={form.goalName} onChange={(e)=>form.setGoalName(e.target.value)} className={classes.textInput}/>
             </FormControl>
@@ -53,10 +57,7 @@ function GeneralForm() {
                     disabled={category && !goalid ? true : false}
                     onChange={(e)=>form.setCategory(e.target.value)}
                     label="Category"
-                    MenuProps={{
-                        maxHeight: 100,
-                        overflowY: "scroll"
-                    }}
+                    
                 >
                     <MenuItem value="">
                         <em>None</em>

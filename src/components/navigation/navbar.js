@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { connect } from 'react-redux'
 import { withRouter } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Toolbar, Typography, Button, IconButton, Badge, Menu, MenuItem, Popover, Switch, Divider, Dialog, DialogActions, Avatar, Grid } from '@material-ui/core';
+import { AppBar, Toolbar, Typography, Button, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import MUIDrawer from './drawer'
@@ -10,7 +10,6 @@ import NotificationMenu from "../notifications/notificationMenu"
 import ProfileModalWindow from '../profile/profileModalWindow'
 import AccountMenu from './accountMenu'
 import AccountToolbar from './accountToolbar'
-import firebase from '../../firebase/firebase'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +44,7 @@ function NavBar(props) {
     props.clearGoalsState()
     props.clearCategoriesState()
     props.clearAvatar()
+    props.clearNotifications()
   }
 
   function sortFunction(a, b) {
@@ -76,11 +76,11 @@ function NavBar(props) {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => setDrawerOpen(true)}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title} onClick={() => props.history.replace("/home")}>
+          <Typography variant="h6" className={classes.title} onClick={() => props.history.push("/home")}>
             Sport Goals
                   </Typography>
           <div className={classes.grow} />
-          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} url={props.avatar ? props.avatar : null} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} notificationsNumber={props.notifications.length}/> : <Button color="inherit" onClick={() => props.history.replace("/signin")}>Login</Button>}
+          {props.user.id && props.user.auth ? <AccountToolbar avatarAlt={avatarAlt} url={props.avatar ? props.avatar : null} setAccountAnchor={setAccountAnchor} setNotificationAnchor={setNotificationAnchor} notificationsNumber={props.notifications.length}/> : <Button color="inherit" onClick={() => props.history.push("/signin")}>Login</Button>}
 
         </Toolbar>
       </AppBar>
@@ -113,7 +113,8 @@ const mapDispatchToProps = dispatch => {
     setTheme: (str) => dispatch({ type: "THEME/CHANGE", payload: str }),
     clearGoalsState: () => dispatch({ type: "GOALS/LOAD", payload: {} }),
     clearCategoriesState: () => dispatch({ type: "GOALS/CATEGORY/LOAD", payload: [] }),
-    clearAvatar: ()=>dispatch({ type: "AVATAR/LOAD", payload: "" })
+    clearAvatar: ()=>dispatch({ type: "AVATAR/LOAD", payload: "" }),
+    clearNotifications: ()=>dispatch({ type: "NOTIFICATION/LOAD", payload: [] })
   }
 }
 

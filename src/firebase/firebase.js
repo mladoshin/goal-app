@@ -31,12 +31,15 @@ class Firebase {
   logout() {
     return this.auth.signOut()
   }
+
   async register(name, surname, email, password) {
+
     await this.auth.createUserWithEmailAndPassword(email, password)
       .then(function () {
         const user = app.auth().currentUser;
         user.sendEmailVerification();
       })
+    
     return this.auth.currentUser.updateProfile({
       displayName: name + " " + surname,
       userEmail: email
@@ -46,6 +49,13 @@ class Firebase {
   updateUserProfileUrl(url) {
     return this.auth.currentUser.updateProfile({
       photoURL: url
+    })
+  }
+
+  updateUserProfile(props){
+    this.db.ref(this.getCurrentUserId() + "/general").update({
+      name: props.name ? props.name : null,
+      photoUrl: props.photoUrl ? props.photoUrl : null
     })
   }
 
@@ -128,10 +138,13 @@ class Firebase {
         description: props.description,
         dateCreated: Date.now(),
         isCompleted: false,
-        isArchieved: false
+        isArchieved: false,
+        startRepsValue: props.startRepsValue,
+        targetRepsValue: props.targetRepsValue,
+        currentRepsValue: props.startRepsValue
       });
 
-      this.quickResultUpdate(props.startValue, id.key)
+      //this.quickResultUpdate(props.startValue, id.key)
     } catch (err) {
       alert(err.message)
     }
@@ -158,20 +171,20 @@ class Firebase {
     }
   }
 
-  quickResultUpdate(result, id){
+  quickResultUpdate(result, currentRepsValue, id) {
+    console.log("Updating the goal through the quick update modal")
+    console.log(result, currentRepsValue, id)
     try {
       this.db.ref(this.getCurrentUserId() + "/goals/" + id).update({
         currentValue: result,
+        currentRepsValue: currentRepsValue ? currentRepsValue : null
       });
-      this.db.ref(this.getCurrentUserId() + "/goals/" + id+"/stats").push({
-        date: Date.now(),
-        value: result
-      });
+      
     } catch (err) {
       alert(err.message)
     }
   }
-  
+
   updateGoal(goal) {
     console.log(goal)
     try {
@@ -183,37 +196,95 @@ class Firebase {
         targetValue: goal.targetValue,
         currentValue: goal.startValue,
         deadline: goal.deadline,
-        description: goal.description
+        description: goal.description,
+        targetRepsValue: goal.targetRepsValue ? goal.targetRepsValue : null,
+        currentRepsValue: goal.startRepsValue ? goal.startRepsValue : null
       });
-      this.quickResultUpdate(goal.startValue, goal.id) //push currentValue to goal stats
+      //this.quickResultUpdate(goal.startValue, goal.currentRepsValue, goal.id) //push currentValue to goal stats
     } catch (err) {
       alert(err.message)
     }
   }
 
-  uploadAvatarToStorage(avatar, loadAvatar){
-    const uploadTask = this.storage.ref(this.getCurrentUserId()+"/avatar/avatar.jpg").put(avatar)
-      uploadTask.on("state_changed",
-        snapshot => {
+  checkUser(id, type){
+    if (this.auth.currentUser.emailVerified && type=="VERIFICATION"){
+      this.removeNotification(id, "VERIFIED")
+    }
+  }
 
-        },
-        error=>{
-          //errror function
-          console.log(error.message)
-        },
-        ()=>{
-          this.storage
-            .ref(this.getCurrentUserId()+"/avatar/")
-            .child("avatar.jpg")
-            .getDownloadURL()
-            .then(avatarUrl=>{
-              this.auth.currentUser.updateProfile({
-                photoURL: avatarUrl
-              })
-              loadAvatar(avatarUrl)
+  loadNotifications(loadNotificationsToRedux) {
+    console.log("Running firebase.loadNotifications!")
+    console.log(this.getCurrentUserId())
+    var starCountRef = this.db.ref("/"+this.getCurrentUserId() + "/notifications/").orderByKey().limitToLast(100);
+
+    starCountRef.on('value', function (snapshot) {
+      var notificationItems = [] //local temp variable
+      var identificators = snapshot.val() ? Object.keys(snapshot.val()) : null
+
+      var i = 0;
+
+      snapshot.forEach(function (snapItem) {
+        var item = snapItem.val()
+        item.id = identificators[i]
+        
+        notificationItems.push(item)
+        i++
+      });
+      
+      console.log(notificationItems)
+      
+      
+
+      //goalCategories = Array.from(new Set(goalCategories))
+      //load json of all photos from database into redux state
+      loadNotificationsToRedux(notificationItems)
+    });
+  }
+
+  deleteGoal(goalId) {
+    try {
+      this.db.ref(this.getCurrentUserId() + "/goals/" + goalId).remove()
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  removeNotification(notificationId, type)
+  {
+    if (type !== "VERIFICATION")
+    {
+      try {
+        this.db.ref(this.getCurrentUserId() + "/notifications/" + notificationId).remove()
+      } catch (err) {
+        alert(err.message)
+      }
+    }
+  }
+
+  uploadAvatarToStorage(avatar, loadAvatar) {
+    const uploadTask = this.storage.ref(this.getCurrentUserId() + "/avatar/avatar.jpg").put(avatar)
+    uploadTask.on("state_changed",
+      snapshot => {
+
+      },
+      error => {
+        //errror function
+        console.log(error.message)
+      },
+      () => {
+        this.storage
+          .ref(this.getCurrentUserId() + "/avatar/")
+          .child("avatar.jpg")
+          .getDownloadURL()
+          .then(avatarUrl => {
+            this.auth.currentUser.updateProfile({
+              photoURL: avatarUrl
             })
-        }
-      )
+            this.updateUserProfile({photoUrl: avatarUrl})
+            loadAvatar(avatarUrl)
+          })
+      }
+    )
   }
 
 

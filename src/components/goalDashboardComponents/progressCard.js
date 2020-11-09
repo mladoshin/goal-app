@@ -6,8 +6,11 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme) => ({
     cardPaper: {
         height: "100%",
+        display: "flex", 
+        flexDirection: "column",
         [theme.breakpoints.up("xs")]: {
-            padding: 5
+            padding: 5,
+            justifyContent: "center"
         },
         [theme.breakpoints.up("sm")]: {
             padding: 10
@@ -23,22 +26,41 @@ const useStyles = makeStyles((theme) => ({
         position: "relative",
         marginLeft: "auto",
         marginRight: "auto",
+        
         [theme.breakpoints.up("xs")]: {
-            width: "90%"
+            width: "95%",
+            height: "auto",
+            maxWidth: 120
+
         },
         [theme.breakpoints.up("sm")]: {
             width: "85%",
-            maxWidth: 150
+            height: "auto",
+            marginTop: 10,
+            marginBottom: 10,
+            maxWidth: 130
         },
         [theme.breakpoints.up("md")]: {
-            width: "80%",
-            maxWidth: 180
+            width: "85%",
+            height: "auto",
+            marginTop: 10,
+            marginBottom: 10,
+            maxWidth: 150
         },
         [theme.breakpoints.up("lg")]: {
-            width: "70%",
-            maxWidth: 200
+            width: "80%",
+            height: "auto",
+            marginTop: 10,
+            marginBottom: 10,
+            maxWidth: 180
         }
+    },
+    bottomText: {
+        textAlign: "center", 
+        fontWeight: 600,
+
     }
+
 }));
 
 function ProgressCard(props) {
@@ -49,7 +71,7 @@ function ProgressCard(props) {
     const units = props.units
 
     return (
-        <Paper className={classes.cardPaper} style={{display: "flex", flexDirection: "column", height: "100%"}}>
+        <Paper className={classes.cardPaper}>
             <div className={classes.circularProgress}>
                 <CircularProgressbar value={progressPercent ? progressPercent : 0} text={progressPercent!==undefined ? progressPercent+"%" : "error"} styles={buildStyles({
                     pathColor: "#f50057",
@@ -57,7 +79,7 @@ function ProgressCard(props) {
                 })} />
             </div>
 
-            <Typography variant="body1" style={{ textAlign: "center", paddingTop: 15, fontWeight: 600 }}>{currentlValue + units} / {targetValue + units}</Typography>
+            {!props.isMobile ? <Typography variant="body1" className={classes.bottomText}>{currentlValue + units} / {targetValue + units}</Typography> : null}
 
         </Paper>
     )

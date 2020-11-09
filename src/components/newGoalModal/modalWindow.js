@@ -20,6 +20,22 @@ const useStyles = makeStyles((theme) => ({
     },
     formDialog: {
         
+    },
+    DialogHeader: {
+        display: "flex", 
+        flexDirection: "row",
+        padding: "5px 10px 5px 20px",
+        alignItems: "center"
+    },
+    DialogHeaderText: {
+        flexGrow: 1, 
+        lineHeight: "48px"
+    },
+    FormContainer: {
+        padding: "20px 30px 20px 30px"
+    },
+    DialogActions: {
+        padding: "0px 30px 20px 30px"
     }
 }));
 
@@ -58,7 +74,7 @@ function ModalWindow(props) {
 
     }, [])
 
-    console.log(category)
+    //console.log(category)
     const handleBtnClick = () => {
         if (activeStep < 3) {
             setActiveStep(activeStep + 1)
@@ -102,20 +118,24 @@ function ModalWindow(props) {
 
     return (
         <Dialog onClose={() => handleCloseModal(setOpenAddModal)} open={openAddModal} fullWidth maxWidth="md" className={classes.formDialog}>
-            <div style={{ display: "flex", flexDirection: "row", padding: "5px 10px 5px 20px", alignItems: "center" }}>
-                <Typography variant="h4" style={{ flexGrow: 1, lineHeight: "48px" }}>{header}</Typography>
+
+            <div className={classes.DialogHeader}>
+                <Typography variant="h4" className={classes.DialogHeaderText}>{header}</Typography>
 
                 <IconButton aria-label="close" onClick={() => handleCloseModal(setOpenAddModal)} style={{}}>
                     <CloseIcon />
                 </IconButton>
             </div>
+
             <Divider />
-            <div style={{ padding: "20px 30px 20px 30px" }}>
+
+            <div className={classes.FormContainer}>
                 <FormContext.Provider value={{ goalName, setGoalName, category, setCategory, type, setType, units, setUnits, targetValue, setTargetValue, startValue, setStartValue, description, setDescription, deadline, setDeadline, openTimeInput, setOpenTimeInput, categoryDisabled: props.category ? true : false, isUpdating: props.goal ? true : false }}>
                     <ModalStepper setActiveStep={setActiveStep} activeStep={activeStep} />
                 </FormContext.Provider>
             </div>
-            <DialogActions style={{ padding: "0px 30px 20px 30px" }}>
+
+            <DialogActions className={classes.DialogActions}>
                 <div>
                     <Button
                         disabled={activeStep === 0}
@@ -123,7 +143,7 @@ function ModalWindow(props) {
                         className={classes.button}
                     >
                         Back
-              </Button>
+                    </Button>
 
                     <Button
                         variant="contained"
@@ -135,6 +155,7 @@ function ModalWindow(props) {
                     </Button>
                 </div>
             </DialogActions>
+
         </Dialog>
     )
 }

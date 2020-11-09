@@ -3,7 +3,6 @@ import Chart from "react-apexcharts";
 
 function ProgressChart(props) {
     //console.log(props.data)
-    const categories = []
     var data = []
     var dates = []
     const arr = props.data ? Object.values(props.data) : []
@@ -12,6 +11,10 @@ function ProgressChart(props) {
         const date = new Date(item.date).getTime()
         dates.push(date)
     })
+
+    
+    console.log(props.reversed)
+    console.log(Math.min.apply(null, data))
 
     //console.log(data)
     //console.log(dates)
@@ -67,7 +70,7 @@ function ProgressChart(props) {
                 }
             },
             yaxis: {
-                min: props.reversed ? parseFloat(props.targetValue) : Math.max.apply(null, data), //10.0
+                min: props.reversed ? parseFloat(props.targetValue) : Math.min.apply(null, data), //10.0
                 max: props.reversed ? Math.max.apply(null, data) : parseFloat(props.targetValue),  //11.0 
                 title: {
                     text: 'Result',

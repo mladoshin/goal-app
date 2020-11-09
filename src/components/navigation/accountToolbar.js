@@ -3,6 +3,7 @@ import { Grid, Badge, IconButton, Avatar, Menu, MenuItem } from '@material-ui/co
 import { makeStyles } from '@material-ui/core/styles';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MUIAvatar from './avatar'
+import clsx from "clsx"
 
 const useStyles = makeStyles((theme) => ({
     grid: {
@@ -15,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
     gridItem: {
         padding: 0,
         height: 40
+    },
+    avatarGridItem: {
+        marginLeft: 15
     }
   }));
 
@@ -32,7 +36,7 @@ function AccountToolbar(props){
                 </IconButton>
 
             </Grid>
-            <Grid item className={classes.gridItem} style={{marginLeft: 15}} onClick={(e)=>props.setAccountAnchor(e.currentTarget)}>
+            <Grid item className={clsx(classes.gridItem, classes.avatarGridItem)} onClick={(e)=>props.setAccountAnchor(e.currentTarget)}>
                 <MUIAvatar avatarAlt={props.avatarAlt} url={props.url}/>
             </Grid>
         </Grid>

@@ -7,6 +7,8 @@ import { withRouter, useParams } from "react-router-dom"
 import NavBar from "../components/navigation/navbar"
 import firebase from '../firebase/firebase';
 
+import GoalModal from "../components/goalModal/goalModal"
+
 import ProgressCard from '../components/goalDashboardComponents/progressCard'
 import TimeCard from '../components/goalDashboardComponents/timeCard'
 import ModalWindow from '../components/newGoalModal/modalWindow'
@@ -78,7 +80,9 @@ function GoalPage(props) {
             goal = item
         }
     })
-    //console.log(goal)
+
+    console.log(goal.type)
+
 
     function handleComplete() {
         if (parseFloat(goal.currentValue) == parseFloat(goal.targetValue) || goal.isCompleted) {
@@ -107,8 +111,7 @@ function GoalPage(props) {
         </Paper>
     )
 
-    const progress = (goal.currentValue - goal.startValue) / Math.abs(goal.targetValue - goal.startValue) * 100
-    const progressPercent = Math.floor(Math.abs(progress))
+    const progress = goal.progress  //value of progress of the goal
 
     return (
         <React.Fragment>
@@ -125,7 +128,7 @@ function GoalPage(props) {
 
                     {/* Progress Card component */}
                     <Grid item xs={4}>
-                        <ProgressCard percent={progressPercent} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units} />
+                        <ProgressCard percent={Math.floor(progress)} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units} />
 
                     </Grid>
 
@@ -145,7 +148,7 @@ function GoalPage(props) {
                     {/*Chart progress statistics component*/}
                     <Grid item xs={12}>
                         <Paper className={classes.cardPaper} elevation={3}>
-                            <ProgressChart data={goal.stats} minValue={goal.startValue} targetValue={goal.targetValue} reversed={goal.targetValue < goal.startValue ? true : false} height={300}/>
+                            <ProgressChart data={goal.stats} minValue={goal.startValue} targetValue={goal.targetValue} reversed={parseFloat(goal.targetValue) < parseFloat(goal.startValue) ? true : false} height={300}/>
                         </Paper>
                     </Grid>
 
@@ -153,7 +156,7 @@ function GoalPage(props) {
 
 
             </Container>
-            {openAddModal ? <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} goal={goal} /> : null}
+            {openAddModal ? <GoalModal setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} goal={goal}/> : null}
         </React.Fragment>
 
     );

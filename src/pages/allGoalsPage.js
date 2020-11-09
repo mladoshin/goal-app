@@ -16,10 +16,14 @@ import SportsFootballRoundedIcon from '@material-ui/icons/SportsFootballRounded'
 import AddIcon from '@material-ui/icons/Add';
 import QuickModal from "../components/newGoalModal/quickModal";
 import ModalContext from '../components/newGoalModal/context/quickModalContext'
+import AddTooltip from "../components/tooltip/tooltip"
 
 const useStyles = makeStyles((theme) => ({
 
     cardPaper: {
+        display: "flex", 
+        flexDirection: "row", 
+        alignItems: "center",
         [theme.breakpoints.up("xs")]: {
             padding: 10
         },
@@ -48,13 +52,16 @@ const useStyles = makeStyles((theme) => ({
             padding: "0px 16.6% 0px 16.6%"
         }
     },
-    fab: {
-        margin: theme.spacing(2),
+    gridHeader: {
+        textAlign: "center", 
+        marginTop: 5
     },
-    absolute: {
-        position: 'fixed',
-        bottom: theme.spacing(2),
-        right: theme.spacing(3),
+    categoryText: {
+        marginLeft: 15, 
+        flexGrow: 1
+    },
+    count: {
+        fontWeight: 600
     }
 }));
 
@@ -86,10 +93,10 @@ function AllGoalsPage(props) {
         return (
 
             <Grid item key={index} xs={12} md={6}>
-                <Paper className={classes.cardPaper} style={{ display: "flex", flexDirection: "row", alignItems: "center" }} onClick={() => props.history.replace("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + category + "/filter=none")}>
+                <Paper className={classes.cardPaper} onClick={() => props.history.replace("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + category + "/filter=none")}>
                     {icon}
-                    <Typography variant="h3" style={{ marginLeft: 15, flexGrow: 1 }}>{category}</Typography>
-                    <Typography variant="h5" style={{ fontWeight: 600 }}>{content[index].completedCount + "/" + content[index].count}</Typography>
+                    <Typography variant="h3" className={classes.categoryText}>{category}</Typography>
+                    <Typography variant="h5" className={classes.count}>{content[index].completedCount + "/" + content[index].count}</Typography>
                 </Paper>
             </Grid>
 
@@ -100,7 +107,7 @@ function AllGoalsPage(props) {
 
     const GridHeader = () => {
         return (
-            <Typography variant="h2" style={{ textAlign: "center", marginTop: 5 }}>{filter === "allgoals" ? "All Goals" : "All Categories"}</Typography>
+            <Typography variant="h2" className={classes.gridHeader}>{filter === "allgoals" ? "All Goals" : "All Categories"}</Typography>
         )
     }
 
@@ -145,18 +152,8 @@ function AllGoalsPage(props) {
             </Container>
 
             {/*Tooltip and Modal Window */}
-            <Tooltip title="Add" aria-label="add" onClick={() => {
-                if (firebase.auth.currentUser.emailVerified) {
-                    setOpenAddModal(true)
-                } else {
-                    alert("Verify your email first!")
-                }
+            <AddTooltip setOpenAddModal={setOpenAddModal}/>
 
-            }}>
-                <Fab color="secondary" className={classes.absolute}>
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
             <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} />
             {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal}/> : null}
         </React.Fragment>

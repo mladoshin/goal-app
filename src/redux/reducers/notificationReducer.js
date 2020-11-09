@@ -1,8 +1,10 @@
-export const notificationReducer = (state=["1"], action) => {
+export const notificationReducer = (state=[], action) => {
     var tempState = state
     switch (action.type){
+      case "NOTIFICATION/LOAD":
+            return action.payload;
         case "NOTIFICATION/PUSH":
-          tempState.push(action.payload)
+            tempState.push(action.payload)
             return tempState
         case "NOTIFICATION/REMOVE":
             tempState.slice(action.payload, 1)

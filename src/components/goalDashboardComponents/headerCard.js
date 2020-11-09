@@ -14,6 +14,9 @@ import AddRoundedIcon from '@material-ui/icons/AddRounded';
 const useStyles = makeStyles((theme) => ({
     cardPaper: {
         height: "100%",
+        display: "flex", 
+        flexDirection: "row", 
+        alignItems: "center",
         [theme.breakpoints.up("xs")]: {
             padding: 5
         },
@@ -27,17 +30,26 @@ const useStyles = makeStyles((theme) => ({
             padding: 20
         }
     },
-    
+    nameText: {
+        flexGrow: 1, 
+        marginLeft: 5
+    },
+    updateBtn: {
+        minWidth: 0, 
+        width: 36, 
+        borderColor: "#4caf50", 
+        marginRight: 15
+    }
 }));
 
-const categoryIcon = (category) => {
-    const width = 40
-    const height = 40
-    if (category === "running" || category === "athletics") {
+const CategoryIcon = (props) => {
+    const width = props.width
+    const height = props.height
+    if (props.category === "running" || props.category === "athletics") {
         return <DirectionsRunRoundedIcon style={{width: width, height: height}}/>
-    } else if (category === "weightlifting") {
+    } else if (props.category === "weightlifting") {
         return <FitnessCenterRoundedIcon style={{width: width, height: height}}/>
-    } else if (category === "swimming") {
+    } else if (props.category === "swimming") {
         return <PoolRoundedIcon style={{width: width, height: height}}/>
     } else {
         return <SportsFootballRoundedIcon style={{width: width, height: height}}/>
@@ -49,20 +61,21 @@ function HeaderCard(props) {
     const name = props.goal.name
     const category = props.goal.category
     const variant = props.goal.variant
-    const icon = categoryIcon(category)
+    //const icon = categoryIcon(category)
     const goalId = props.goal.id
-    console.log(props.goal)
+
+    console.log("props.isMobile = "+props.isMobile)
 
     return (
-        <Paper className={classes.cardPaper} style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-            {icon}
-            <Typography variant={variant} style={{flexGrow: 1, marginLeft: 5}}>{name}</Typography>
+        <Paper className={classes.cardPaper}>
+            <CategoryIcon width={40} height={40} category={category}/>
+            <Typography variant={variant} className={classes.nameText}>{name}</Typography>
 
-            <Button variant="outlined" style={{minWidth: 0, width: 36, borderColor: "#4caf50", marginRight: 15}} onClick={()=>props.setOpenQuickModal({currentValue: props.goal.currentValue, units: props.goal.units, id: props.goal.id, startValue: props.goal.startValue, targetValue: props.goal.targetValue})}>
+            <Button variant="outlined" className={classes.updateBtn} onClick={()=>props.setOpenQuickModal({currentValue: props.goal.currentValue, units: props.goal.units, id: props.goal.id, startValue: props.goal.startValue, targetValue: props.goal.targetValue, name: props.goal.name, currentRepsValue: props.goal.currentRepsValue})}>
                 <AddRoundedIcon/>
             </Button>
             
-            <Button variant="outlined" color="secondary" onClick={()=>props.history.replace("/dashboard/userId="+firebase.getCurrentUserId()+"/goals/"+category+"/goalId="+goalId)}>Show</Button>
+            {!props.isMobile ? <Button variant="outlined" color="secondary" onClick={()=>props.history.push("/dashboard/userId="+firebase.getCurrentUserId()+"/goals/"+category+"/goalId="+goalId)}>Show</Button> : null}
         </Paper>
     )
 }

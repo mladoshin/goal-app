@@ -16,17 +16,11 @@ const useStyles = makeStyles((theme) => ({
     instructions: {
       marginTop: theme.spacing(1),
       marginBottom: theme.spacing(1)
-    },
-    stepLabel: {
-        [theme.breakpoints.down("sm")]: {
-            /*fontSize: 10*/
-        }
     }
 
   }));
 
 function ModalStepper(props) {
-    const setActiveStep = props.setActiveStep;
     const activeStep = props.activeStep;
     const classes = useStyles()
     const [isMobile, setIsMobile] = useState(false)
@@ -42,7 +36,7 @@ function ModalStepper(props) {
             }
         }
     }
-    console.log(isMobile)
+    
 
     useEffect(()=>{
         window.addEventListener("resize", ()=>handleResize())
@@ -58,16 +52,16 @@ function ModalStepper(props) {
         <React.Fragment>
             <Stepper activeStep={activeStep} style={{padding: 0, maxWidth: "100%"}}>
                 <Step>
-                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "General" : "" }</StepLabel>
+                    <StepLabel>{!isMobile ?  "General" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Current and target values" : "" }</StepLabel>
+                    <StepLabel>{!isMobile ?  "Current and target values" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Deadline" : "" }</StepLabel>
+                    <StepLabel>{!isMobile ?  "Deadline" : "" }</StepLabel>
                 </Step>
                 <Step>
-                    <StepLabel className={classes.stepLabel}>{!isMobile ?  "Additional Info" : "" }</StepLabel>
+                    <StepLabel>{!isMobile ?  "Additional Info" : "" }</StepLabel>
                 </Step>
 
             </Stepper>

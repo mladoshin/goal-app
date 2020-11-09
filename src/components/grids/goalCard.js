@@ -1,15 +1,14 @@
-import React, { useContext} from "react"
+import React, { useContext, useState, useEffect} from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Typography } from '@material-ui/core'
-import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import LinearProgress from '@material-ui/core/LinearProgress';
-import 'react-circular-progressbar/dist/styles.css';
+import { withRouter } from "react-router-dom"
 
 import ProgressCard from '../goalDashboardComponents/progressCard'
 import HeaderCard from '../goalDashboardComponents/headerCard'
 import TimeCard from '../goalDashboardComponents/timeCard'
 
 import ModalContext from '../newGoalModal/context/quickModalContext'
+import firebase from "../../firebase/firebase"
 
 const useStyles = makeStyles((theme) => ({
     gridContainer: {
@@ -27,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     cardPaper: {
+        display: "flex",
+        flexDirection: "row",
+        flexWrap: "nowrap",
         [theme.breakpoints.up("xs")]: {
             padding: 5
         },
@@ -106,44 +108,79 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function GoalsCard(props) {
+    const [isMobile, setIsMobile] = useState(false)
+
     const modal = useContext(ModalContext)
-    console.log(modal)
+    //console.log(modal)
     const classes = useStyles()
     const goal = props.goal;
-    //console.log(goal.currentValue)
-    const deadline = new Date(goal.deadline).toLocaleDateString()
-    const dateCreated = new Date(goal.dateCreated).toLocaleDateString()
-    const timeCreated = new Date(goal.dateCreated).toLocaleTimeString()
 
     const startValue = parseFloat(goal.startValue)
     const currentValue = parseFloat(goal.currentValue)
     const targetValue = parseFloat(goal.targetValue)
 
+    const isDeadlineCard = props.isDeadlineCard ? true : false
     
-    const progress = Math.abs(currentValue-startValue) / Math.abs(targetValue-startValue) * 100
-    const progressPercent = Math.floor(Math.abs(progress))
+    const progress = goal.progress; //progress of the goal
 
+    //Window resize logic for better responsiveness
+    useEffect(()=>{
+        window.addEventListener("resize", ()=>handleResize())      
+    })
+
+    useEffect(()=>{
+        handleResize()
+    }, [])
+
+    function handleResize(){
+        if(window.innerWidth < 600){
+            if(!isMobile){
+                setIsMobile(true)
+            }
+        }else{
+            if(isMobile){
+                setIsMobile(false)
+            }
+        }
+    }
+    //Window resize logic for better responsiveness END
+
+    function handleClick(){
+        if(isMobile){
+            props.history.push("/dashboard/userId="+firebase.getCurrentUserId()+"/goals/"+goal.category+"/goalId="+goal.id)
+        }
+        console.log("Click")
+    }
+
+    console.log(isMobile)
+
+    
     //console.log(startValue, currentValue, targetValue)
     //console.log("Fraction: " + progress)
     //console.log("Percent: " + progressPercent)
 
     return (
-        <Paper className={classes.paper} elevation={3}>
-            <Grid item container direction="row">
-                <Grid item xs={4} className={classes.gridContainer}>
-                    <ProgressCard percent={progressPercent} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units}/>  {/* Progress card component for displaying the progress on the goal */}
+        <Paper className={classes.paper} elevation={3} onClick={()=>handleClick()}>
+            <Grid item container direction="row" style={{height: "100%"}}>
+                {/*     Progress Card Component     */}
+                <Grid item xs={4} className={classes.gridContainer} style={{height: "100%"}}>
+                    <ProgressCard percent={Math.floor(progress)} currentValue={goal.currentValue} targetValue={goal.targetValue} units={goal.units} isMobile={isMobile}/>  {/* Progress card component for displaying the progress on the goal */}
                 </Grid>
+                {/*     Progress Card Component END     */}
 
-                <Grid item container direction="column" xs={8} justify="space-between" className={classes.sideGridContainer}>
+                
+                <Grid item container direction="column" xs={8} justify="space-between" className={classes.sideGridContainer} style={{flexWrap: "nowrap", height: "100%"}}>
+                    {/*     Header Card Component     */}
                     <Grid item className={classes.sideGridItem}>
-                        <HeaderCard goal={goal} variant="h4" setOpenQuickModal={modal.setOpenQuickModal} openQuickModal={modal.openQuickModal} />
+                        <HeaderCard goal={goal} variant="h4" setOpenQuickModal={modal.setOpenQuickModal} openQuickModal={modal.openQuickModal} isMobile={isMobile}/>
                     </Grid>
+                    {/*     Header Card Component END    */}
 
-
+                    {/*     Time Card Component     */}
                     <Grid item style={{ flexGrow: 1 }}>
-                        <TimeCard deadline={goal.deadline} dateCreated={goal.dateCreated} />
+                        <TimeCard deadline={goal.deadline} dateCreated={goal.dateCreated} isMobile={isMobile}/>
                     </Grid>
-
+                    {/*     Time Card Component END    */}
 
                 </Grid>
             </Grid>
@@ -151,4 +188,4 @@ function GoalsCard(props) {
     )
 }
 
-export default GoalsCard;
+export default withRouter(GoalsCard);

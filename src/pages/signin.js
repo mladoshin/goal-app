@@ -26,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  link: {
+    cursor: "pointer"
+  }
 }));
 
 
@@ -99,12 +102,12 @@ function SignInPage(props) {
                     </Button>
             <Grid container>
               <Grid item xs>
-                <Link onClick={() => props.history.replace("/reset-password")} variant="body2" style={{ cursor: "pointer" }}>
+                <Link onClick={() => props.history.replace("/reset-password")} variant="body2" className={classes.link}>
                   Forgot password?
                         </Link>
               </Grid>
               <Grid item>
-                <Link onClick={() => props.history.replace("/signup")} variant="body2" style={{ cursor: "pointer" }}>
+                <Link onClick={() => props.history.replace("/signup")} variant="body2" className={classes.link}>
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

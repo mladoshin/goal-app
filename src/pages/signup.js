@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import firebase from '../firebase/firebase'
-import { Paper, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core'
 import NavBar from "../components/navigation/navbar"
 import { withRouter } from "react-router-dom"
 
@@ -12,7 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -35,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    link: {
+        cursor: "pointer" 
+    }
 }));
 
 function SignUpPage(props) {
@@ -140,7 +143,7 @@ function SignUpPage(props) {
                     </Button>
                         <Grid container justify="flex-end">
                             <Grid item>
-                                <Link onClick={() => props.history.replace("/signin")} variant="body2" style={{ cursor: "pointer" }}>
+                                <Link onClick={() => props.history.replace("/signin")} variant="body2" className={classes.link}>
                                     Already have an account? Sign in
                         </Link>
                             </Grid>

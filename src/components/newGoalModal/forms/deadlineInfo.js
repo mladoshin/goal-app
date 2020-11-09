@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react"
-import { FormControl, TextField, Switch } from '@material-ui/core'
+import React, { useContext } from "react"
+import { FormControl, Switch } from '@material-ui/core'
 import {makeStyles} from "@material-ui/core/styles";
 import FormContext from "../context/formContext"
 import DateFnsUtils from '@date-io/date-fns';
@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1)
     },
     container: {
+        paddingTop: 20, 
+        display: "flex", 
+        flexDirection: "column",
         [theme.breakpoints.up("xs")]: {
             height: 300
         },
@@ -34,7 +37,15 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.up("xl")]: {
 
         }
+    },
+    SwitchContainer: {
+        display: "flex", 
+        flexDirection: "row", 
+        width: 140, 
+        alignItems: "center", 
+        justifyContent: "space-between"
     }
+    
   }));
 
 
@@ -43,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 function DeadlineForm() {
     const classes = useStyles()
     const form = useContext(FormContext)
-    console.log(form)
 
     const handleDateChange = (date) => {
         try{
@@ -58,7 +68,7 @@ function DeadlineForm() {
     }
 
     return (
-        <form style={{ paddingTop: 20, display: "flex", flexDirection: "column" }} className={classes.container}>
+        <form className={classes.container}>
             <FormControl>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <KeyboardDatePicker
@@ -77,7 +87,8 @@ function DeadlineForm() {
 
 
                 </MuiPickersUtilsProvider>
-                <div style={{ display: "flex", flexDirection: "row", width: 140, alignItems: "center", justifyContent: "space-between" }}>
+
+                <div className={classes.SwitchContainer}>
                     <h5>Add Time</h5>
                     <Switch
                         checked={form.openTimeInput}
@@ -86,6 +97,7 @@ function DeadlineForm() {
                         name="checkedB"
                     />
                 </div>
+
                 {form.openTimeInput ?
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardTimePicker

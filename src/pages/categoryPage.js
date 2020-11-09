@@ -10,9 +10,12 @@ import AddIcon from '@material-ui/icons/Add';
 
 import GoalsGrid from '../components/grids/goalsGrid'
 import ModalWindow from '../components/newGoalModal/modalWindow'
-import QuickModal from "../components/newGoalModal/quickModal";
+import QuickModal from "../components/quickResultUpdateModal/quickModal";
 import ModalContext from '../components/newGoalModal/context/quickModalContext'
+import AddTooltip from "../components/tooltip/tooltip"
 import clsx from "clsx";
+import GoalModal from "../components/goalModal/goalModal"
+import DialogComponent from "../components/DialogComponent/dialog";
 
 const useStyles = makeStyles((theme) => ({
     mainContainer: {
@@ -30,14 +33,6 @@ const useStyles = makeStyles((theme) => ({
             padding: "0px 16.6% 0px 16.6%"
         }
 
-    },
-    fab: {
-        margin: theme.spacing(2),
-    },
-    absolute: {
-        position: 'fixed',
-        bottom: theme.spacing(2),
-        right: theme.spacing(3),
     },
     subheader: {
         width: "100%",
@@ -107,20 +102,11 @@ function CategoryPage(props) {
 
             </Container>
 
-            <Tooltip title="Add" aria-label="add" onClick={() => {
-                if (firebase.auth.currentUser.emailVerified) {
-                    setOpenAddModal(true)
-                } else {
-                    alert("Verify your email first!")
-                }
+            <AddTooltip setOpenAddModal={setOpenAddModal}/>
 
-            }}>
-                <Fab color="secondary" className={classes.absolute}>
-                    <AddIcon />
-                </Fab>
-            </Tooltip>
-            <ModalWindow setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} category={category} />
-            {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal} /> : null}
+            <GoalModal setOpenAddModal={setOpenAddModal} openAddModal={openAddModal} category={category} />
+            {openQuickModal ? <QuickModal setOpenQuickModal={setOpenQuickModal} openQuickModal={openQuickModal}/> : null}
+
         </React.Fragment>
 
     );

@@ -56,6 +56,15 @@ const useStyles = makeStyles((theme) => ({
   },
   listItem_Text: {
     fontWeight: 500
+  }, 
+  DrawerSubheading: {
+    textAlign: "center", 
+    fontWeight: 700, 
+    padding: "8px 0px 8px 0px"
+  },
+  logo: {
+    flexGrow: 1,
+    textAlign: "center"
   }
 }));
 
@@ -78,14 +87,14 @@ function MUIDrawer(props) {
 
   const AuthLinks = (
     <List>
-      <ListItem button key="signin" onClick={() => props.history.replace("/signin")}>
+      <ListItem button key="signin" onClick={() => props.history.push("/signin")}>
         <ListItemIcon>
           <MailIcon />
         </ListItemIcon>
         <ListItemText primary="Sign In" />
       </ListItem>
 
-      <ListItem button key="signup" onClick={() => props.history.replace("/signup")}>
+      <ListItem button key="signup" onClick={() => props.history.push("/signup")}>
         <ListItemIcon>
           <MailIcon />
         </ListItemIcon>
@@ -122,9 +131,9 @@ function MUIDrawer(props) {
 
   const listItemClickHandler = (item, type) => {
     if (type === "category") {
-      props.history.replace("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + item + "/filter=none")
+      props.history.push("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + item + "/filter=none")
     } else if (type === "goal") {
-      props.history.replace("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + item.category + "/goalId=" + item.id)
+      props.history.push("/dashboard/userId=" + firebase.getCurrentUserId() + "/goals/" + item.category + "/goalId=" + item.id)
     }
 
     props.setDrawerOpen(false)
@@ -153,14 +162,14 @@ function MUIDrawer(props) {
           {DashboardLink}
           <Divider />
 
-          <Typography variant="h5" style={{ textAlign: "center", fontWeight: 700, padding: "8px 0px 8px 0px" }}>Recent Goals</Typography>
+          <Typography variant="h5" className={classes.DrawerSubheading}>Recent Goals</Typography>
           <Divider />
           <List>
             {recentItems}
           </List>
 
           <Divider />
-          <Typography variant="h5" style={{ textAlign: "center", fontWeight: 700, padding: "8px 0px 8px 0px" }}>Categories</Typography>
+          <Typography variant="h5" className={classes.DrawerSubheading}>Categories</Typography>
           <Divider />
           <List>
             {categoriesItems}
@@ -169,7 +178,7 @@ function MUIDrawer(props) {
         :
         <div>
           <List>
-            <ListItem button key="home" onClick={() => props.history.replace("/home")}>
+            <ListItem button key="home" onClick={() => props.history.push("/home")}>
               <ListItemIcon>
                 <MailIcon />
               </ListItemIcon>
@@ -196,7 +205,7 @@ function MUIDrawer(props) {
       }}
     >
       <div className={classes.drawerHeader}>
-        <Typography variant="h4" style={{ flexGrow: 1, textAlign: "center" }}>SG</Typography>
+        <Typography variant="h4" className={classes.logo}>SG</Typography>
         <IconButton onClick={() => props.setDrawerOpen(false)}>
           <ChevronLeftIcon />
         </IconButton>

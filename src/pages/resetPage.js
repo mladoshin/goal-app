@@ -1,6 +1,6 @@
 import React, {useState} from "react"
 import firebase from '../firebase/firebase'
-import { Typography, Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Container} from '@material-ui/core'
+import { Typography, Button, CssBaseline, TextField, Container} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles';
 
 import NavBar from '../components/navigation/navbar';
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
-    },
+    }
   }));
 
 function ResetPage(props){

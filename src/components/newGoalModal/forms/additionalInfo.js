@@ -5,6 +5,9 @@ import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
     container: {
+        paddingTop: 20, 
+        display: "flex", 
+        flexDirection: "column",
         [theme.breakpoints.up("xs")]: {
             height: 300
         },
@@ -28,9 +31,10 @@ const useStyles = makeStyles((theme) => ({
 function AdditionalForm(){
     const classes = useStyles()
     const form = useContext(FormContext)
-    console.log(form)
+    //console.log(form)
+
     return(
-        <form style={{paddingTop: 20, display: "flex", flexDirection: "column"}} className={classes.container}>
+        <form className={classes.container}>
             <FormControl>
                 <TextField label="Description" rows={4} variant="outlined" value={form.description} onChange={(e)=>form.setDescription(e.target.value)} multiline style={{minHeight: 100}}/>
             </FormControl>

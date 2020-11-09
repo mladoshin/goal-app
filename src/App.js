@@ -29,8 +29,9 @@ function App(props) {
         //console.log(firebase.auth.currentUser)
         if (firebase.getCurrentUserId()) {
           props.setUser({ id: firebase.getCurrentUserId(), name: firebase.auth.currentUser.displayName, email: firebase.auth.currentUser.email, auth: true})
-          firebase.loadUserGoals(props.loadGoals, props.loadCategories)
-          props.loadAvatar(firebase.auth.currentUser.photoURL)
+          firebase.loadUserGoals(props.loadGoals, props.loadCategories) //load all goals
+          props.loadAvatar(firebase.auth.currentUser.photoURL) //load avatar
+          firebase.loadNotifications(props.loadNotifications) //load notifications
         } else {
           props.setUser({ id: firebase.getCurrentUserId(), auth: false })
         }
@@ -128,7 +129,8 @@ const mapDispatchToProps = dispatch => {
     setUser: (obj) => dispatch({ type: "USER/LOADINFO", payload: obj }),
     loadGoals: (arr) => dispatch({type: "GOALS/LOAD", payload: arr}),
     loadCategories: (obj) => dispatch({type: "GOALS/CATEGORY/LOAD", payload: obj}),
-    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url})
+    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url}),
+    loadNotifications: (arr)=>dispatch({type: "NOTIFICATION/LOAD", payload: arr})
   }
 }
 

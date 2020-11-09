@@ -1,102 +1,121 @@
-import React, {useState} from "react"
-import {connect} from "react-redux"
-import { Typography, Button, IconButton, Badge, Divider, Dialog, DialogActions, Avatar, Grid, TextField, FormControl } from '@material-ui/core';
+import React, { useState } from "react"
+import { makeStyles } from "@material-ui/core/styles"
+import { connect } from "react-redux"
+import { Typography, Button, IconButton, Badge, DialogActions, Avatar, Grid, TextField } from '@material-ui/core';
 import firebase from '../../firebase/firebase'
 import CameraAltIcon from '@material-ui/icons/CameraAlt';
-import CloseIcon from '@material-ui/icons/Close'
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 
-function ProfileModalWindow(props){
-    const openProfile = props.openProfile
-    const setOpenProfile = props.setOpenProfile
-    const [name, setName] = useState(props.user.name)
+import DialogComponent from "../DialogComponent/dialog";
+import profileContent from "./profileContent"
+import ProfileContent from "./profileContent";
 
-    //const name = firebase.auth.currentUser ? firebase.auth.currentUser.displayName : ""
-    const email = props.user.email
-    const avatarAlt = props.avatarAlt ? props.avatarAlt.toUpperCase() : ""
-    const [avatar, setAvatar] = useState(null)
-    const [enableEdit, setEnableEdit] = useState(false)
-    console.log(avatar)
+const useStyles = makeStyles((theme) => ({
+  DialogHeader: {
+    display: "flex",
+    flexDirection: "row",
+    padding: "5px 10px 5px 20px",
+    alignItems: "center"
+  },
+  DialogHeaderText: {
+    flexGrow: 1,
+    lineHeight: "48px"
+  },
+  container: {
+    padding: 20
+  },
+  AvatarContainer: {
+    textAlign: "center",
+    paddingBottom: 20
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    marginLeft: "auto",
+    marginRight: "auto"
+  },
+  AvatarInput: {
+    height: 100,
+    width: 100,
+    opacity: 0,
+    position: "absolute",
+    zIndex: 100
+  },
+  UploadContainer: {
+    textAlign: "center"
+  },
+  TextInputContainer: {
+    margin: "0px auto 0px auto",
+    maxWidth: 350,
+    display: "flex",
+    position: "relative",
+    alignItems: "center"
+  },
+  NameInput: {
+    width: "100%"
+  },
+  NameTypography: {
+    flexGrow: 1,
+    textAlign: "center"
+  },
+  EditBtn: {
+    position: "absolute",
+    right: 0
+  },
+  EmailTypography: {
+    textAlign: "center"
+  }
+}));
 
-    function handleFileChange(file){
-      setAvatar(file)
-      console.log(file)
+
+
+function ProfileModalWindow(props) {
+  const openProfile = props.openProfile
+  const setOpenProfile = props.setOpenProfile
+  const [name, setName] = useState(props.user.name)
+  const classes = useStyles()
+  const avatarSrc = props.avatar
+
+  //const name = firebase.auth.currentUser ? firebase.auth.currentUser.displayName : ""
+  const email = props.user.email
+  const avatarAlt = props.avatarAlt ? props.avatarAlt.toUpperCase() : ""
+  const [avatar, setAvatar] = useState("")
+  const [enableEdit, setEnableEdit] = useState(false)
+  console.log(props)
+
+  function handleClick(setUser) {
+    if (name !== firebase.auth.currentUser.displayName) {
+      firebase.auth.currentUser.updateProfile({
+        displayName: name
+      })
+      firebase.updateUserProfile({name: name})
+      setUser({ id: firebase.getCurrentUserId(), name: name, email: firebase.auth.currentUser.email, auth: true })
     }
 
-    function handleUpload(loadAvatar){
-      firebase.uploadAvatarToStorage(avatar, loadAvatar)
-    }
+    setOpenProfile(false)
+  }
 
-    function handleClick(setUser){
-      if (name !== firebase.auth.currentUser.displayName){
-        firebase.auth.currentUser.updateProfile({
-          displayName: name
-        })
-        setUser({ id: firebase.getCurrentUserId(), name: name, email: firebase.auth.currentUser.email, auth: true})
-      }
-      
-      setOpenProfile(false)
-    }
-
-    return(
-        <Dialog onClose={()=>setOpenProfile(false)} open={openProfile} fullWidth>
-        <div style={{display: "flex", flexDirection: "row", padding: "5px 10px 5px 20px", alignItems: "center"}}>
-          <Typography variant="h4" style={{flexGrow: 1, lineHeight: "48px"}}>Profile</Typography>
+  return (
+        <DialogComponent header="Profile" setOpenAddModal={setOpenProfile} openAddModal={openProfile ? true : false} maxWidth="md">
           
-          <IconButton aria-label="close" onClick={()=>setOpenProfile(false)} style={{}}>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <Divider/>
-        <div style={{padding: 20}}>
-          <Grid container direction="column" alignItems="stretch">
-            <Grid item style={{textAlign: "center", paddingBottom: 20}}>
-              <Badge
-                overlap="circle"
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-                badgeContent={<IconButton size="small" variant="contained"><CameraAltIcon/></IconButton>}
-              >
-                <Avatar style={{width: 100, height: 100, marginLeft: "auto", marginRight: "auto"}} src={props.avatar ? props.avatar : null}>{avatarAlt}</Avatar>
-                <input type="file" name="avatarInput" style={{height: 100, width: 100, opacity: 0, position: "absolute", zIndex: 100}} onChange={(e)=>handleFileChange(e.target.files[0])}/>
-              </Badge>
-              
-            </Grid>
-            
-            <Grid item style={{textAlign: "center"}}>
-              {avatar ? <Button onClick={()=>handleUpload(props.loadAvatar)}>Upload</Button> : null}
-            </Grid>
-            
-            <Grid item >
-              <div style={{margin: "0px auto 0px auto", maxWidth: 350, display: "flex", position: "relative", alignItems: "center"}}>
-                  {enableEdit ? <TextField value={name} label="Name" variant="outlined" onChange={(e)=>setName(e.target.value)} style={{width: "100%"}}/> : <Typography variant="h4" style={{flexGrow: 1, textAlign: "center"}}>{name}</Typography>}
-                  {!enableEdit ? <IconButton style={{position: "absolute", right: 0}} onClick={()=>setEnableEdit(!enableEdit)}><EditRoundedIcon/></IconButton> : null}
-              </div>
-            </Grid>
-            <Grid item>
-              <Typography variant="body1" style={{textAlign: "center"}}>{email}</Typography>
-            </Grid>
-          </Grid>
-          
-        </div>
-        <DialogActions>
-          <Button onClick={()=>handleClick(props.setUser)}>Save Changes</Button>
-        </DialogActions>
-      </Dialog>
-    )
+          <ProfileContent form={{name, setName, email, avatar, setAvatar, enableEdit, setEnableEdit, avatarAlt, loadAvatar: props.loadAvatar, avatarSrc}}/>
+
+          <DialogActions>
+            <Button onClick={()=>handleClick(props.setUser)}>Save Changes</Button>
+          </DialogActions>
+        </DialogComponent>
+  )
 }
 
 const mapStateToProps = (state) => {
-  return{
+  return {
     avatar: state.userAvatar
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadAvatar: (url)=>dispatch({type: "AVATAR/LOAD", payload: url}),
+    loadAvatar: (url) => dispatch({ type: "AVATAR/LOAD", payload: url }),
     setUser: (obj) => dispatch({ type: "USER/LOADINFO", payload: obj })
   }
 }
